@@ -1,0 +1,53 @@
+{{define "content"}}{{with .Content}}
+<a class="back" href="/models"><span aria-hidden="true">← </span>Models</a>
+<header class="head">
+<h1>{{.Name}}</h1>
+<p class="sub">{{.Meta}}</p>
+{{with .Summary}}<p class="lead">{{.}}</p>{{end}}
+</header>
+
+{{with .Needs}}<p class="callout">{{.}}</p>{{else}}
+<section class="stats">
+<div class="stat tone-{{.SessionTone}}"><h2 class="label">Your sessions</h2><p class="big">{{.Sessions}}</p><span class="meter" style="{{share .SessionShare}}"><i></i></span><p class="note">fit in its {{.Window}} window</p></div>
+<div class="stat"><h2 class="label">Memory</h2><p class="big">{{.MemoryTotal}}</p>
+<span class="stack" aria-hidden="true">{{range .Memory}}<i class="seg-{{.Tone}}" style="{{share .Share}}"></i>{{end}}</span>
+<p class="note">{{range $i, $m := .Memory}}{{if $i}} · {{end}}{{$m.Size}} {{$m.Label}}{{end}}</p></div>
+</section>
+
+{{with .Race}}<section><h2 class="label">A typical reply</h2>{{template "race" .}}</section>{{end}}
+{{with .Speed}}<section class="speed"><h2 class="label">Speed here, tokens a second</h2>
+<table>
+<thead><tr><th>Context</th>{{range .At}}<th class="r">{{.}}</th>{{end}}</tr></thead>
+<tbody>
+<tr><td>Writing</td>{{range .Write}}<td class="r">{{.}}</td>{{end}}</tr>
+<tr><td>Reading</td>{{range .Read}}<td class="r">{{.}}</td>{{end}}</tr>
+</tbody>
+</table>
+<p class="note">{{.Source}}</p>
+</section>{{end}}
+{{end}}
+
+<div class="pair">
+<section><h2 class="label">From the model card</h2>
+{{with .GoodAt}}<ul class="claims good" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+{{with .WatchOut}}<ul class="claims watch" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+{{with .Benchmarks}}<dl class="scores">{{range .}}<div><dt>{{.Name}}</dt><dd>{{.Score}}</dd></div>{{end}}</dl>{{end}}
+{{with .Card}}<p class="note"><a href="{{.}}" rel="noreferrer" target="_blank">Model card<span aria-hidden="true"> ↗</span></a></p>{{end}}
+</section>
+{{if or .Strengths .Concerns}}<section><h2 class="label">On this machine</h2>
+{{with .Strengths}}<ul class="claims good" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+{{with .Concerns}}<ul class="claims watch" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+{{with .Installed}}<p class="note">Installed as {{.}}</p>{{end}}{{with .InstalledAs}}<p class="note">{{.}}</p>{{end}}
+</section>{{end}}
+</div>
+
+{{with .Options}}<section><h2 class="label">Ways to run it</h2>
+<table class="options">
+<thead><tr><th>Quant</th><th>KV cache</th><th class="r">Window</th><th class="r">Sessions</th><th class="r">tok/s</th><th class="r">Quality</th></tr></thead>
+<tbody>{{range .}}<tr{{if .Best}} class="best"{{end}}><td>{{.Quant}}</td><td>{{.KV}}</td><td class="r">{{.Window}}</td><td class="r">{{.Sessions}}</td><td class="r">{{.Speed}}</td><td class="r">{{.Quality}}</td></tr>{{end}}</tbody>
+</table></section>{{end}}
+
+{{with .Try}}<section class="try"><h2 class="label">Try it for one session</h2>{{template "command" .}}<p class="note">Nothing in your harness changes. lo0 shows the plan before it downloads or starts anything.</p></section>{{end}}
+
+{{template "facts" .Facts}}
+{{end}}{{end}}

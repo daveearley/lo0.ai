@@ -1,0 +1,270 @@
+---
+import { histogram, machine, percentiles, windows } from '../data/example';
+
+const span = histogram.to - histogram.from;
+const pos = (log: number) => `${(((log - histogram.from) / span) * 100).toFixed(3)}%`;
+const ticks = [14, 15, 16, 17, 18, 19, 20].map((l) => ({
+  log: l,
+  label: l >= 20 ? `${2 ** (l - 20)}M` : `${2 ** (l - 10)}k`,
+}));
+const initial = '256k';
+const pct = (share: number) => Math.round(share * 100);
+const shareText = (share: number) => (share < 0.01 ? 'under 1%' : `${pct(share)}%`);
+
+// One rule per window: :has() moves the threshold and the readout, no script.
+const css = windows
+  .map((w) => `.ctx:has(input[value='${w.id}']:checked){--w:${w.log};--pct:${pct(w.share)}}`)
+  .join('');
+---
+<div class="ctx">
+  <style is:inline set:html={css}></style>
+
+  <div class="top">
+    <fieldset class="seg">
+      <legend>Context window</legend>
+      <div class="opts">
+        {windows.map((w) => (
+          <label>
+            <input type="radio" name="ctx-window" value={w.id} checked={w.id === initial} />
+            <span>{w.label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <p class="readout" aria-hidden="true">
+      <span class="pct tnum"></span>
+      <span class="of">of {machine.sessions} sessions would have fitted in a <span class="win">{windows.map((w) => <span data-w={w.id}>{w.label}</span>)}</span> window</span>
+    </p>
+  </div>
+
+  <div class="plot" aria-hidden="true">
+    <div class="marks">
+      {percentiles.map((p) => (
+        <span class="pctl" style={`left:${pos(Math.log2(p.tokens))}`}><b>{p.label}</b> {p.text}</span>
+      ))}
+    </div>
+    <div class="bars">
+      {histogram.bins.map((b, i) => (
+        <span
+          class="bar"
+          style={`--hi:${b.hi};--h:${(b.count / histogram.max).toFixed(4)};--i:${i}`}
+          title={`${b.count} sessions`}
+        ></span>
+      ))}
+      <span class="threshold"><span class="cap"></span></span>
+    </div>
+    <div class="axis">
+      {ticks.map((t) => <span style={`left:${pos(t.log)}`}>{t.label}</span>)}
+    </div>
+  </div>
+
+  <p class="caption">
+    Each bar is a group of sessions, placed by the largest prompt the model saw in that session.
+    Log scale, from the example history.
+  </p>
+
+  <div class="visually-hidden">
+  <table>
+    <caption>Share of sessions that would have fitted in each context window</caption>
+    <thead><tr><th>Window</th><th>Sessions that fit</th></tr></thead>
+    <tbody>
+      {windows.map((w) => <tr><td>{w.label}</td><td>{shareText(w.share)}</td></tr>)}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<style>
+  @property --w { syntax: '<number>'; inherits: true; initial-value: 18; }
+  @property --pct { syntax: '<integer>'; inherits: true; initial-value: 61; }
+
+  .ctx {
+    --from: 14;
+    --span: 6;
+    display: grid;
+    gap: 1.5rem;
+    transition: --w 700ms var(--ease-in-out), --pct 700ms var(--ease-in-out);
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.25rem 2rem;
+  }
+
+  .seg {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+
+    & legend {
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      color: var(--ink-3);
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  .opts {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule);
+
+    & label { position: relative; }
+    & input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+    & span {
+      display: block;
+      padding: 0.4rem clamp(0.7rem, 0.4rem + 1vw, 1.05rem);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      transition: background-color 180ms, color 180ms, box-shadow 180ms;
+    }
+    & input:checked + span {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 1px 2px oklch(20% 0.01 260 / 0.12), 0 0 0 1px var(--rule-strong);
+    }
+    & label:hover input:not(:checked) + span { color: var(--ink); }
+    & input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  }
+
+  .readout {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    max-width: 26rem;
+    line-height: 1.3;
+  }
+
+  .pct {
+    flex: none;
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--accent);
+    font-variation-settings: 'wdth' 88;
+    counter-reset: pct var(--pct);
+
+    &::before { content: counter(pct) '%'; }
+  }
+
+  .ctx:has(input[value='32k']:checked) .pct::before { content: '<1%'; }
+
+  .of { color: var(--ink-2); font-size: 0.9375rem; }
+  .win [data-w] { display: none; color: var(--ink); font-weight: 600; }
+  .ctx:has(input[value='32k']:checked) [data-w='32k'],
+  .ctx:has(input[value='64k']:checked) [data-w='64k'],
+  .ctx:has(input[value='128k']:checked) [data-w='128k'],
+  .ctx:has(input[value='256k']:checked) [data-w='256k'],
+  .ctx:has(input[value='1m']:checked) [data-w='1m'] { display: inline; }
+
+  .plot {
+    position: relative;
+    padding-top: 1.75rem;
+  }
+
+  .marks { position: absolute; inset: 0 0 auto 0; height: 100%; pointer-events: none; }
+
+  .pctl {
+    position: absolute;
+    top: 0;
+    bottom: 1.75rem;
+    translate: -50% 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-3);
+    white-space: nowrap;
+
+    & b { font-weight: 500; color: var(--ink-2); }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 1.35rem;
+      bottom: 0;
+      border-left: 1px dashed var(--rule-strong);
+    }
+  }
+
+  .bars {
+    position: relative;
+    display: flex;
+    align-items: end;
+    gap: clamp(1px, 0.35vw, 4px);
+    height: clamp(9rem, 6rem + 12vw, 15rem);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .bar {
+    --fit: clamp(0, (var(--w) - var(--hi)) * 1000 + 1, 1);
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    min-height: 2px;
+    border-radius: 3px 3px 0 0;
+    background: color-mix(in oklch, var(--accent) calc(var(--fit) * 100%), var(--rule-strong));
+    transform-origin: bottom;
+
+    @supports (animation-timeline: view()) {
+      animation: bar-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry calc(60% + var(--i) * 1.2%);
+    }
+  }
+
+  @keyframes bar-rise {
+    from { scale: 1 0; }
+  }
+
+  .threshold {
+    position: absolute;
+    top: -0.5rem;
+    bottom: 0;
+    left: calc((var(--w) - var(--from)) / var(--span) * 100%);
+    width: 0;
+    border-left: 2px solid var(--ink);
+    pointer-events: none;
+
+    & .cap {
+      position: absolute;
+      top: 0;
+      left: -5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink);
+    }
+  }
+
+  .axis {
+    position: relative;
+    height: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+
+    & span { position: absolute; top: 0.5rem; translate: -50% 0; }
+    & span:first-child { translate: 0 0; }
+    & span:last-child { translate: -100% 0; }
+  }
+
+  .caption { font-size: var(--step--1); color: var(--ink-3); max-width: 52ch; }
+
+  @media (width < 34rem) {
+    .opts { display: flex; width: 100%; }
+    .opts label { flex: 1; text-align: center; }
+    .seg { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar { animation: none; }
+  }
+</style>

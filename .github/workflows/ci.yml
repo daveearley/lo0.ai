@@ -1,0 +1,168 @@
+name: ci
+
+# Every change is checked on all six supported platforms, natively: the
+# unit and end-to-end tests from source, then the end-to-end tests and both
+# quick-start installers against the exact binaries a release would publish.
+# release.yml and nightly.yml run this same workflow.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # A tag build is the release; anything else is named after its commit.
+  VERSION: ${{ github.ref_type == 'tag' && github.ref_name || format('ci-{0}', github.sha) }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+            go.sum
+            tools/go.sum
+      - name: Modules are tidy
+        run: |
+          go mod tidy -diff
+          (cd tools && go mod tidy -diff)
+      - name: Code is formatted
+        run: go tool -modfile=tools/go.mod golangci-lint fmt --diff ./...
+      - run: go vet ./...
+      - run: go tool -modfile=tools/go.mod staticcheck ./...
+      - run: go tool -modfile=tools/go.mod golangci-lint run ./...
+      - name: No known vulnerabilities in what lo0 calls
+        run: go tool -modfile=tools/go.mod govulncheck ./...
+      - name: Shell scripts pass shellcheck
+        run: shellcheck site/public/install.sh site/test/install.sh
+      - name: Workflows pass actionlint
+        # actionlint needs a different version of a YAML library than
+        # golangci-lint, so it cannot share tools/go.mod.
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+
+  test:
+    name: test (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux/amd64, os: ubuntu-latest, race: true }
+          - { platform: linux/arm64, os: ubuntu-24.04-arm, race: true }
+          - { platform: darwin/arm64, os: macos-latest, race: true }
+          - { platform: darwin/amd64, os: macos-15-intel, race: true }
+          - { platform: windows/amd64, os: windows-latest, race: true }
+          # The race detector does not support windows/arm64.
+          - { platform: windows/arm64, os: windows-11-arm, race: false }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - run: go vet ./...
+      # Includes ./e2e, which builds cmd/lo0 and runs it as a user would.
+      - run: go test ${{ matrix.race && '-race' || '' }} ./...
+        shell: bash
+
+  dist:
+    name: release build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - run: make dist VERSION="$VERSION"
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  release-binary:
+    name: release binary (${{ matrix.platform }})
+    needs: dist
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux/amd64, os: ubuntu-latest, binary: lo0-linux-amd64 }
+          - { platform: linux/arm64, os: ubuntu-24.04-arm, binary: lo0-linux-arm64 }
+          - { platform: darwin/arm64, os: macos-latest, binary: lo0-darwin-arm64 }
+          - { platform: darwin/amd64, os: macos-15-intel, binary: lo0-darwin-amd64 }
+          - { platform: windows/amd64, os: windows-latest, binary: lo0-windows-amd64.exe }
+          - { platform: windows/arm64, os: windows-11-arm, binary: lo0-windows-arm64.exe }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          name: dist
+          path: dist
+      # Artifacts do not keep the executable bit.
+      - run: chmod +x dist/lo0-*
+      - name: The binaries match checksums.txt
+        run: cd dist && (command -v sha256sum >/dev/null && sha256sum -c checksums.txt || shasum -a 256 -c checksums.txt)
+
+      - name: End-to-end tests against the release binary
+        run: go test -count=1 ./e2e/
+        env:
+          # go test runs in the package directory, so the path is absolute.
+          LO0_E2E_BINARY: ${{ github.workspace }}/dist/${{ matrix.binary }}
+          LO0_E2E_VERSION: ${{ env.VERSION }}
+
+      - name: Quick start, install.sh
+        if: runner.os != 'Windows'
+        run: sh site/test/install.sh dist "$VERSION"
+      - name: Quick start, install.ps1 in Windows PowerShell
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./site/test/install.ps1 -Dist dist -Version $env:VERSION
+      - name: Quick start, install.ps1 in PowerShell 7
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./site/test/install.ps1 -Dist dist -Version $env:VERSION
+
+      - name: Quick start, from source with make build
+        if: runner.os != 'Windows'
+        run: |
+          make build
+          bin/lo0 version
+          LO0_OFFLINE=1 bin/lo0 match > /dev/null
+      - name: Quick start, go install from a checkout
+        if: runner.os != 'Windows'
+        run: |
+          go install ./cmd/lo0
+          "$(go env GOPATH)/bin/lo0" version
+          LO0_OFFLINE=1 "$(go env GOPATH)/bin/lo0" match > /dev/null
+      - name: Quick start, go install from a checkout
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          go install ./cmd/lo0
+          $lo0 = Join-Path (go env GOPATH) 'bin\lo0.exe'
+          & $lo0 version
+          $env:LO0_OFFLINE = '1'
+          & $lo0 match | Out-Null
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

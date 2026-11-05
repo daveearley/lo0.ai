@@ -1,0 +1,805 @@
+---
+import Base from '../layouts/Base.astro';
+import InstallTabs from '../components/InstallTabs.astro';
+import TuiShot from '../components/TuiShot.astro';
+import WebShot from '../components/WebShot.astro';
+import Pipeline from '../components/Pipeline.astro';
+import MemoryBudget from '../components/MemoryBudget.astro';
+import ContextChart from '../components/ContextChart.astro';
+import CarryOver from '../components/CarryOver.astro';
+import Catalogue from '../components/Catalogue.astro';
+import Packet from '../components/Packet.astro';
+import catalog from '../../../internal/catalog/catalog.json';
+import home from '../data/screens/home.json';
+import modelsScreen from '../data/screens/models.json';
+import tryScreen from '../data/screens/try.json';
+import webHomeLight from '../assets/screens/web-home-light.png';
+import webHomeDark from '../assets/screens/web-home-dark.png';
+import webModelLight from '../assets/screens/web-model-light.png';
+import webModelDark from '../assets/screens/web-model-dark.png';
+import { faq, plain } from '../data/faq';
+import { site } from '../site';
+
+const sources = [
+  {
+    name: 'Hardware',
+    where: ['OS', 'system_profiler', 'nvidia-smi', 'rocm-smi', 'Windows registry'],
+    records: 'CPU, memory and whether it is unified, GPUs and VRAM, memory bandwidth, free disk.',
+  },
+  {
+    name: 'Local runtimes',
+    where: ['Ollama', 'LM Studio', 'llama.cpp cache'],
+    records: 'Installed runtimes and models, with size, quantisation, context length and tool-calling support.',
+  },
+  {
+    name: 'Claude Code setup',
+    where: ['~/.claude', '~/.claude.json', '.claude/', '.mcp.json'],
+    records: 'Instruction files, MCP servers, hooks, commands, subagents, skills, plugins and permission rules.',
+  },
+  {
+    name: 'Session history',
+    where: ['~/.claude/projects', '~/.codex/sessions'],
+    records: 'Peak context per session, compactions, tool and MCP calls, reply times, languages and repositories.',
+  },
+];
+
+const commands = [
+  ['lo0', 'The interactive workbench, in any terminal'],
+  ['lo0 web', 'The same assessment in your browser, served to this machine only'],
+  ['lo0 match', 'Verdict, models that fit and what carries over, as a report'],
+  ['lo0 try', 'Start the recommended harness on the best model for one session'],
+  ['lo0 benchmark', 'Measure a downloaded model’s real speed on this machine'],
+  ['lo0 migrate', 'Show the plan to keep a model and harness, then ask'],
+  ['lo0 migrate --undo', 'Show how to reverse everything migrate changed, then ask'],
+  ['--json', 'The full result as JSON, for match, scan and migrate --dry-run'],
+];
+
+const works = [
+  { group: 'Coding agents', items: ['Claude Code', 'OpenCode'] },
+  { group: 'History from', items: ['Claude Code', 'Codex'] },
+  { group: 'Runtimes', items: ['Ollama', 'LM Studio', 'llama.cpp'] },
+  { group: 'Hardware', items: ['Apple Silicon', 'NVIDIA', 'AMD'] },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'lo0',
+    url: site.url,
+    description: site.description,
+    applicationCategory: 'DeveloperApplication',
+    applicationSubCategory: 'Local AI',
+    operatingSystem: 'macOS, Linux, Windows',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+    codeRepository: site.repo,
+    downloadUrl: `${site.url}/install`,
+    image: `${site.url}/og.png`,
+    author: { '@type': 'Person', name: site.author },
+    featureList: [
+      'Finds the open-weight coding models your hardware can run',
+      'Measures how much of your Claude Code and Codex history fits each model',
+      'Estimates and benchmarks local model speed on your machine',
+      'Sets up models in Ollama, LM Studio or llama.cpp',
+      'Runs Claude Code or OpenCode on a local model',
+      'Backs up and undoes every change',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: plain(f.a) },
+    })),
+  },
+];
+
+/** Backticked spans in an answer become code elements. */
+const rich = (s: string) =>
+  s.split(/(`[^`]+`)/).map((part) => (part.startsWith('`') ? { code: part.slice(1, -1) } : { text: part }));
+---
+<Base jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero-top">
+      <div class="hero-copy">
+        <p class="eyebrow">Free and open source · macOS, Linux and Windows</p>
+        <h1>Find the local model that fits your machine and your work.</h1>
+      </div>
+      <div class="hero-side">
+        <p class="lede">
+          lo0 reads your hardware and your Claude Code and Codex history, shows which open models can
+          do your work, and moves your coding agent onto the one you choose.
+        </p>
+        <div class="cta">
+          <InstallTabs name="hero-install" />
+          <p class="cta-note">Then run <code>lo0</code>. <a href="/install">Other ways to install</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="wrap hero-shot">
+      <TuiShot
+        screen={home}
+        label="lo0's home screen: 65% of the work can run on this machine today, with Qwen3.6-35B-A3B already downloaded, a typical reply estimated at 45 seconds against 8 with Opus 5.5, and the next step to try it in Claude Code for one session."
+      />
+    </div>
+  </section>
+
+  <section class="works" aria-label="Works with">
+    <div class="wrap works-grid">
+      {works.map((w) => (
+        <div>
+          <p class="works-group">{w.group}</p>
+          <p class="works-items">{w.items.join(' · ')}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="intro">
+    <div class="wrap">
+      <p class="statement">
+        Benchmarks tell you how a model does on someone else’s tasks.{' '}
+        <span>lo0 looks at yours.</span>
+      </p>
+      <dl class="facts">
+        <div>
+          <dt>Context</dt>
+          <dd>How much context your sessions reach, and how many would fit in a local model’s window.</dd>
+        </div>
+        <div>
+          <dt>Tools</dt>
+          <dd>Which tools, hooks and MCP servers your work depends on, and which of them work with a local model.</dd>
+        </div>
+        <div>
+          <dt>Hardware</dt>
+          <dd>The largest model your memory can hold with room left for the cache, and how fast it will write.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="tour">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">A tour</p>
+        <h2>Open lo0 and the first screen tells you whether your work can run here.</h2>
+        <p>
+          Run <code>lo0</code> in any terminal. It scans in under a second, then shows how much of
+          your work runs here today, how long a reply would take compared with the model you use now,
+          and the best next step, one key away.
+        </p>
+      </header>
+
+      <div class="feature">
+        <div class="feature-text">
+          <p class="step-n">Models</p>
+          <h3>Every model that fits, and how well</h3>
+          <p>
+            Each model shows the share of your sessions its window would have held, how fast it writes
+            on your chip and the memory it needs, cache included, at the context you use.
+          </p>
+          <p>
+            What it is good and bad at is taken from its model card and shown apart from what lo0
+            measured.
+            Press <kbd>c</kbd> to compare two to four side by side, or <kbd>b</kbd> to benchmark one.
+          </p>
+        </div>
+        <TuiShot
+          screen={modelsScreen}
+          label="lo0's Models screen: 28 models fit this machine, ranked by the share of sessions they hold, speed, tier and memory, with Qwen3.6-35B-A3B selected and its model card claims, scores and memory budget below."
+        />
+      </div>
+
+      <div class="feature flip">
+        <div class="feature-text">
+          <p class="step-n">Try</p>
+          <h3>Try it for one session. Keep it if it holds up.</h3>
+          <p>
+            <code>lo0 try</code> shows every download, its size and where it comes from, then prepares
+            the model in Ollama and starts Claude Code on it. The settings live in that session’s
+            environment, so nothing in Claude Code changes.
+          </p>
+          <p>
+            <code>lo0 migrate</code> makes it permanent after the same review. It adds a
+            <code>claude-local</code> command that runs Claude Code on the local model, and
+            <code>claude</code> still goes to Claude.
+            Every change is recorded, and <code>lo0 migrate --undo</code> reverses it.
+          </p>
+        </div>
+        <TuiShot
+          screen={tryScreen}
+          label="lo0's plan to try Qwen3.6-35B-A3B in Claude Code: the model is already in Ollama, a 2.3 GiB background model will be downloaded from Hugging Face, two models are created with a 256k context window and checked, then Claude Code starts with environment variables set for this session only."
+        />
+      </div>
+
+      <div class="feature">
+        <div class="feature-text">
+          <p class="step-n">Web</p>
+          <h3>Or read it in your browser</h3>
+          <p>
+            <code>lo0 web</code> serves the same assessment as web pages: a chart of every session
+            against the model’s window, and a page for each model with its speed at each context
+            length.
+          </p>
+          <p>
+            It listens on this machine only and needs the token it prints. The pages change nothing:
+            each step is a command you run in the terminal, where you see the plan first.
+          </p>
+        </div>
+        <div class="web-pair">
+          <WebShot
+            light={webHomeLight}
+            dark={webHomeDark}
+            alt="lo0 in the browser: 65% of your work can run on this machine today, a chart of every session's peak context against Qwen3.6-35B-A3B's 256k window, and the commands to try or keep it."
+          />
+          <WebShot
+            light={webModelLight}
+            dark={webModelDark}
+            path="/models/qwen3.6-35b-a3b"
+            alt="lo0's page for Qwen3.6-35B-A3B: 65% of sessions fit, 28.9 GiB of 48 GiB memory, a typical reply in 45 seconds against 8, and its speed at 8k, 87.1k and 256k of context."
+            class="back"
+          />
+        </div>
+      </div>
+
+      <p class="shots-note">
+        Screens from lo0 on an Apple M5 Pro with 64 GiB, reading a demo history of 373 Claude Code sessions.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Two steps read. Three change things, and only after you say yes.</h2>
+        <p>
+          Anything that changes your machine, such as downloading a model or writing a config, is
+          shown as a plan first: every step, every file and every download with its size.
+        </p>
+      </header>
+
+      <Pipeline />
+
+      <div class="reads">
+        <h3>What the scan reads</h3>
+        <dl class="sources">
+          {sources.map((s) => (
+            <div class="source">
+              <dt>{s.name}</dt>
+              <dd class="where">{s.where.map((w) => <code>{w}</code>)}</dd>
+              <dd class="records">{s.records}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="aside">
+          A missing GPU tool or a malformed transcript line becomes a warning at the end of the
+          report instead of stopping the scan.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="fit">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">How lo0 decides</p>
+        <h2>Three numbers decide whether a model can do your work.</h2>
+      </header>
+
+      <div class="explain">
+        <div class="explain-text">
+          <h3><span class="tag">1</span>Usable by models</h3>
+          <p>
+            How much memory a model can occupy while staying on the GPU. On Apple Silicon that is the
+            share of unified memory macOS lets the GPU wire: about two thirds, or three quarters above
+            36 GiB. On discrete GPUs it is total VRAM across cards.
+          </p>
+          <p>
+            Weights and the KV cache both have to fit inside it. Shrink either one, with a smaller
+            quantisation or an 8-bit cache, and the window can grow. Try it.
+          </p>
+        </div>
+        <div class="panel">
+          <MemoryBudget />
+        </div>
+      </div>
+
+      <div class="explain">
+        <div class="explain-text">
+          <h3><span class="tag">2</span>Peak context</h3>
+          <p>
+            The largest prompt the model saw in each session, read from token usage in your
+            transcripts and shown as percentiles across all of them.
+          </p>
+          <h3><span class="tag">3</span>Fits within</h3>
+          <p>
+            The share of your sessions that would have fitted in a 32k, 64k, 128k, 256k and 1M token
+            window. Most local models top out at 128k or 256k.
+          </p>
+          <p>
+            If a third of your sessions fit in 128k, a 128k model can take a third of them as you work
+            today.
+          </p>
+        </div>
+        <div class="panel">
+          <ContextChart />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="carry-over">
+    <div class="wrap split">
+      <header class="section-head">
+        <p class="eyebrow">Your setup</p>
+        <h2>What carries over, and what stays behind.</h2>
+        <p>
+          Claude Code on a local model keeps your instructions, MCP servers, hooks, skills and
+          permissions as they are. For a move to OpenCode, lo0 maps each part and says which work as
+          they are, which it converts and which have no equivalent.
+        </p>
+        <p>
+          Tools built into the Claude apps, such as their browser, do not exist outside them, so lo0
+          counts how often your history relied on them. The chart shows a move to OpenCode.
+        </p>
+      </header>
+      <CarryOver />
+    </div>
+  </section>
+
+  <section class="section" id="models">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">Model catalogue</p>
+        <h2>{catalog.models.length} open-weight coding models, ranked for long tool-calling sessions.</h2>
+        <p>
+          Each entry records parameter counts, attention layout and quantised file sizes, enough to
+          work out memory use at any context length. Tiers run from A to D, judged from each model’s
+          published agentic coding scores, and every claim links to its model card.
+        </p>
+      </header>
+      <Catalogue />
+    </div>
+  </section>
+
+  <section class="section privacy" id="privacy">
+    <div class="wrap privacy-grid">
+      <Packet />
+      <div>
+        <header class="section-head">
+          <p class="eyebrow">Privacy</p>
+          <h2>lo0 reads sensitive files, so it is strict about what it keeps.</h2>
+        </header>
+        <ul class="points" role="list">
+          <li>
+            <h3>Nothing about you leaves</h3>
+            <p>lo0 goes online to check for updates and to download what you confirmed in a plan. No request carries your usage, paths, prompts or setup, and none goes to a lo0 server.</p>
+          </li>
+          <li>
+            <h3>Read-only by construction</h3>
+            <p>Every scan stage receives a Go <code>fs.FS</code>, which has no write methods. Only a confirmed plan writes.</p>
+          </li>
+          <li>
+            <h3>Counts and names, not content</h3>
+            <p>No prompt text, model output, file contents, command arguments or secret values. MCP <code>env</code> and <code>headers</code> are reduced to key names.</p>
+          </li>
+          <li>
+            <h3>Paths stay local</h3>
+            <p>Repository paths appear in your own report. <code>--redact</code> and the saved report replace them before you share it.</p>
+          </li>
+        </ul>
+        <p class="aside">
+          Tests feed secrets, prompts and command arguments through the scanners and fail if any of
+          them reach the output. <a href="/privacy">More on privacy</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="wrap faq-grid">
+      <header class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2>Running a coding model on your own machine.</h2>
+        <p>
+          For the whole setup, step by step, read <a href="/guides/claude-code-local-model">Run Claude
+          Code on a local model</a>.
+        </p>
+      </header>
+      <div class="faq">
+        {faq.map((f, i) => (
+          <details name="faq" open={i === 0}>
+            <summary><h3>{f.q}</h3></summary>
+            <p>{rich(f.a).map((p) => ('code' in p ? <code>{p.code}</code> : p.text))}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section install" id="install">
+    <div class="wrap install-grid">
+      <header class="section-head">
+        <p class="eyebrow">Install</p>
+        <h2>One command, then <code class="big">lo0</code>.</h2>
+        <p>
+          A single binary for macOS, Linux and Windows on amd64 and arm64, with GPU detection for
+          Apple Silicon, NVIDIA and AMD. No account, no runtime to install first.
+        </p>
+        <InstallTabs name="install" />
+        <p class="cta-note">Checksums, versions and uninstalling: <a href="/install">the install guide</a>.</p>
+      </header>
+
+      <dl class="commands">
+        {commands.map(([cmd, text]) => (
+          <div>
+            <dt><code>{cmd}</code></dt>
+            <dd>{text}</dd>
+          </div>
+        ))}
+        <div class="commands-note">
+          <dt class="visually-hidden">Output</dt>
+          <dd>Progress goes to stderr and the report to stdout, so <code>lo0 match &gt; report.txt</code> does what you expect. Add <code>--redact</code> to replace your project paths before sharing.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: clamp(2.5rem, 1rem + 5vw, 5.5rem) clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    overflow-x: clip;
+  }
+
+  .hero-top {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 1.5rem clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: end;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 1.4rem;
+
+    & h1 { font-size: var(--step-4); letter-spacing: -0.035em; max-width: 15ch; }
+    & .eyebrow { color: var(--ink-3); }
+  }
+
+  .hero-side { display: grid; gap: 1.5rem; min-width: 0; }
+
+  .lede { font-size: var(--step-1); color: var(--ink-2); max-width: 40ch; line-height: 1.5; }
+
+  .cta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; max-width: 32rem; }
+
+  .cta-note {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+    & a { margin-left: 0.35rem; color: var(--ink-2); }
+  }
+
+  .hero-shot {
+    margin-top: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    @starting-style { opacity: 0; translate: 0 16px; }
+    transition: opacity 800ms var(--ease-out), translate 800ms var(--ease-out);
+  }
+
+  @media (width < 60rem) {
+    .hero-top { grid-template-columns: minmax(0, 1fr); align-items: start; }
+    .lede { max-width: 48ch; }
+  }
+
+  .works {
+    padding-block: 0 clamp(3rem, 2rem + 4vw, 5rem);
+  }
+
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .works-group { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); margin-bottom: 0.3rem; }
+  .works-items { color: var(--ink); font-weight: 500; }
+
+  @media (width < 48rem) {
+    .works-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .intro {
+    padding-block: clamp(1rem, 0.5rem + 2vw, 2rem) var(--section);
+  }
+
+  .statement {
+    font-size: var(--step-3);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.028em;
+    font-variation-settings: 'wdth' 92;
+    max-width: 24ch;
+    text-wrap: balance;
+    color: var(--ink-3);
+
+    & span { color: var(--ink); }
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+
+    & div { border-top: 1px solid var(--ink); padding-top: 1rem; }
+    & dt { font-weight: 600; margin-bottom: 0.4rem; }
+    & dd { color: var(--ink-2); max-width: 34ch; }
+  }
+
+  @media (width < 48rem) {
+    .facts { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+    align-items: center;
+
+    & + & { margin-top: clamp(4rem, 3rem + 5vw, 7.5rem); }
+    &.flip > :first-child { order: 2; }
+    &.flip { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); }
+  }
+
+  .feature-text {
+    display: grid;
+    gap: 1rem;
+    align-content: center;
+
+    & h3 { font-size: var(--step-2); letter-spacing: -0.02em; }
+    & p:not(.step-n) { color: var(--ink-2); }
+  }
+
+  .step-n { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+
+  kbd {
+    padding: 0.05em 0.4em;
+    border: 1px solid var(--rule-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-size: 0.82em;
+    background: var(--surface);
+  }
+
+  .web-pair {
+    display: grid;
+    min-width: 0;
+
+    & > :global(:first-child) { width: 84%; }
+    & > :global(.back) {
+      width: 64%;
+      justify-self: end;
+      margin-top: -34%;
+      position: relative;
+    }
+  }
+
+  .shots-note {
+    margin-top: clamp(4rem, 3rem + 4vw, 6rem);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  @media (width < 60rem) {
+    .feature, .feature.flip { grid-template-columns: minmax(0, 1fr); }
+    .feature.flip > :first-child { order: 0; }
+  }
+
+  .reads {
+    margin-top: clamp(4rem, 3rem + 4vw, 6rem);
+
+    & > h3 { font-size: var(--step-2); margin-bottom: 1.5rem; }
+  }
+
+  .sources {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+
+  .source {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 0.5rem 2rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--rule);
+
+    & dt { font-weight: 600; }
+  }
+
+  .where { display: flex; flex-wrap: wrap; gap: 0.35rem; align-content: start; }
+  .where code { white-space: nowrap; }
+  .records { color: var(--ink-2); }
+
+  @media (width < 56rem) {
+    .source { grid-template-columns: 1fr; }
+  }
+
+  .aside { margin-top: 1.25rem; font-size: var(--step--1); color: var(--ink-3); max-width: 62ch; }
+
+  .explain {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+
+    & + & { margin-top: clamp(4rem, 3rem + 5vw, 7rem); }
+  }
+
+  .explain-text {
+    position: sticky;
+    top: 6rem;
+    display: grid;
+    gap: 1rem;
+
+    & h3 { display: flex; align-items: center; gap: 0.7rem; font-size: var(--step-2); }
+    & h3:not(:first-child) { margin-top: 1.25rem; }
+    & p { color: var(--ink-2); }
+  }
+
+  .tag {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 1px solid var(--rule-strong);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: 0;
+  }
+
+  .panel {
+    min-width: 0;
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) + 4px);
+    background: var(--surface);
+  }
+
+  @media (width < 60rem) {
+    .explain { grid-template-columns: minmax(0, 1fr); }
+    .explain-text { position: static; }
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+
+    & .section-head { margin-bottom: 0; }
+    & .section-head p + p { font-size: var(--step-0); }
+  }
+
+  @media (width < 60rem) {
+    .split { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .privacy-grid {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(2.5rem, 1rem + 6vw, 7rem);
+    align-items: start;
+
+    & > :first-child { position: sticky; top: 8rem; }
+  }
+
+  .points {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+
+    & li { border-top: 1px solid var(--rule); padding-top: 1rem; }
+    & h3 { font-size: var(--step-1); margin-bottom: 0.4rem; }
+    & p { color: var(--ink-2); }
+  }
+
+  @media (width < 48rem) {
+    .privacy-grid { grid-template-columns: minmax(0, 1fr); }
+    .privacy-grid > :first-child { position: static; }
+    .points { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+
+    & .section-head { margin-bottom: 0; position: sticky; top: 6rem; }
+    & .section-head p { font-size: var(--step-0); }
+  }
+
+  .faq {
+    border-top: 1px solid var(--rule);
+
+    & details { border-bottom: 1px solid var(--rule); }
+    & summary {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.1rem;
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker { display: none; }
+      &::after {
+        content: '+';
+        flex: none;
+        font-family: var(--font-mono);
+        color: var(--ink-3);
+        transition: rotate 200ms var(--ease-out);
+      }
+      &:hover h3 { color: var(--accent); }
+    }
+    & details[open] summary::after { rotate: 45deg; }
+    & h3 { font-size: var(--step-1); transition: color 160ms; }
+    & p { color: var(--ink-2); padding-bottom: 1.4rem; max-width: 62ch; }
+
+    & details::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition: block-size 260ms var(--ease-out), content-visibility 260ms allow-discrete;
+    }
+    & details[open]::details-content { block-size: auto; }
+  }
+
+  @media (width < 60rem) {
+    .faq-grid { grid-template-columns: minmax(0, 1fr); }
+    .faq-grid .section-head { position: static; }
+  }
+
+  .install-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    align-items: start;
+
+    & .section-head { margin-bottom: 0; gap: 1.25rem; }
+  }
+
+  .big { font-size: 0.9em; padding: 0 0.2em; }
+
+  .commands {
+    display: grid;
+    border-top: 1px solid var(--rule);
+
+    & > div {
+      display: grid;
+      grid-template-columns: 11.5rem minmax(0, 1fr);
+      gap: 0.35rem 1.5rem;
+      padding-block: 0.95rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    & dd { color: var(--ink-2); font-size: 0.9375rem; }
+    & dt code { white-space: nowrap; }
+    & .commands-note { grid-template-columns: 1fr; border-bottom: 0; }
+    & .commands-note dd { grid-column: 1 / -1; font-size: var(--step--1); color: var(--ink-3); }
+  }
+
+  @media (width < 60rem) {
+    .install-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (width < 36rem) {
+    .commands > div { grid-template-columns: 1fr; }
+  }
+</style>

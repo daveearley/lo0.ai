@@ -1,0 +1,206 @@
+---
+/**
+ * A real GGUF file name taken apart. Each part is a radio, so the reader
+ * can pick one with a click or the arrow keys, and it works without
+ * JavaScript.
+ */
+import Rich from './Rich.astro';
+import { model, quant, billions, statedActive, activeWeightBytes, GiB } from '../../data/models';
+
+const m = model('qwen3-coder-30b-a3b');
+const q = quant(m, 'Q4_K_M');
+const full = (m.params * 2) / GiB;
+const gb = (b: number) => (b / 1e9).toFixed(1);
+
+const parts = [
+  {
+    id: 'family',
+    text: 'Qwen3',
+    label: 'Lab and generation',
+    body: 'Alibaba’s Qwen team, third generation. Labs number their families, and the same number can cover models of many sizes.',
+    fact: [m.released.slice(0, 4), 'released'],
+    link: 'model-card',
+  },
+  {
+    id: 'spec',
+    text: 'Coder',
+    label: 'Specialisation',
+    body: 'Tuned for code and agent work on top of the general model. Other labs write -Code, -Dev or put it in the name, as with Devstral.',
+    fact: null,
+    link: 'fine-tune',
+  },
+  {
+    id: 'total',
+    text: '30B',
+    label: 'Total parameters',
+    body: `${billions(m.params)} parameters, every one of which has to fit in memory. At [[precision|16 bits]] that is ${full.toFixed(1)} GiB before any context.`,
+    fact: [billions(m.params), 'parameters'],
+    link: 'parameters',
+  },
+  {
+    id: 'active',
+    text: 'A3B',
+    label: 'Active parameters',
+    body: `A [[moe|mixture of experts]]: about ${billions(statedActive(m))} of the ${billions(m.params)} run for each token. That sets the speed: each token reads about ${gb(activeWeightBytes(m, q))} GB of weights, not ${gb(q.bytes)}.`,
+    fact: [billions(statedActive(m)), 'used per token'],
+    link: 'active-parameters',
+  },
+  {
+    id: 'tune',
+    text: 'Instruct',
+    label: 'Tuning',
+    body: 'Tuned to follow instructions and call tools, rather than the base model that only continues text. A coding agent needs this one.',
+    fact: null,
+    link: 'instruct',
+  },
+  {
+    id: 'quant',
+    text: 'Q4_K_M',
+    label: 'Quantisation',
+    body: `[[k-quants|K-quant]] at about ${q.bitsPerWeight} bits a weight, medium mix. The file is ${(q.bytes / GiB).toFixed(1)} GiB instead of ${full.toFixed(1)}, and the default most people should start from.`,
+    fact: [`${q.bitsPerWeight}`, 'bits per weight'],
+    link: 'k-quants',
+  },
+  {
+    id: 'format',
+    text: '.gguf',
+    label: 'File format',
+    body: 'llama.cpp’s format, which Ollama and LM Studio load too. One file holds the weights, the tokenizer and the chat template.',
+    fact: [`${(q.bytes / GiB).toFixed(1)} GiB`, 'to download'],
+    link: 'gguf',
+  },
+] as const;
+
+const css = parts
+  .map((p) => `.decoder:has(input[value='${p.id}']:checked) :is([data-part='${p.id}']){display:grid}`)
+  .join('');
+---
+<div class="decoder">
+  <style is:inline set:html={css}></style>
+  <fieldset class="name">
+    <legend class="visually-hidden">Parts of the file name</legend>
+    {parts.map((p, i) => (
+      <>
+        {i > 0 && i < parts.length - 1 && <span class="sep" aria-hidden="true">-</span>}
+        <label class="part">
+          <input type="radio" name="decoder" value={p.id} checked={i === 0} />
+          <span class="seg">{p.text}</span>
+          <span class="tag" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        </label>
+      </>
+    ))}
+  </fieldset>
+
+  <div class="panels">
+    {parts.map((p) => (
+      <div class="panel" data-part={p.id}>
+        <div class="text">
+          <p class="label">{p.label}</p>
+          <p class="body"><Rich text={p.body} /></p>
+          <a class="more" href={`#${p.link}`}>Read the entry<span aria-hidden="true"> ↓</span></a>
+        </div>
+        {p.fact && <p class="fact"><strong class="tnum">{p.fact[0]}</strong><span>{p.fact[1]}</span></p>}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .decoder {
+    display: grid;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  }
+
+  .name {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    row-gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: clamp(1.25rem, 0.7rem + 2.6vw, 2.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .sep { color: var(--ink-3); padding-top: 0.05em; }
+
+  .part {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: 0.45rem;
+    cursor: pointer;
+
+    & input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  }
+
+  .seg {
+    padding-bottom: 0.12em;
+    color: var(--ink-2);
+    background: linear-gradient(var(--rule-strong), var(--rule-strong)) bottom / 100% 1px no-repeat;
+    transition: color 160ms, background-size 160ms;
+  }
+
+  .tag {
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-3);
+    transition: color 160ms;
+  }
+
+  .part:hover .seg { color: var(--ink); }
+  .part input:checked ~ .seg {
+    color: var(--ink);
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 100% 3px;
+  }
+  .part input:checked ~ .tag { color: var(--accent); }
+  .part input:focus-visible ~ .seg { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+  .panels { display: grid; }
+
+  .panel {
+    display: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem 2.5rem;
+    align-items: end;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .text { display: grid; gap: 0.5rem; max-width: 52ch; }
+  .label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+  .body { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; }
+  .more { justify-self: start; font-size: var(--step--1); color: var(--ink-3); margin-top: 0.25rem; }
+
+  .fact {
+    display: grid;
+    justify-items: end;
+    text-align: end;
+
+    & strong {
+      font-size: var(--step-4);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variation-settings: 'wdth' 85;
+    }
+    & span { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); margin-top: 0.5rem; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .panel { animation: rise 260ms var(--ease-out); }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(4px); }
+  }
+
+  @media (width < 40rem) {
+    .panel { grid-template-columns: minmax(0, 1fr); }
+    .fact { justify-items: start; text-align: start; grid-row: 1; }
+  }
+</style>

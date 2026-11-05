@@ -1,0 +1,4 @@
+{
+  "permissions": {"allow": ["Bash(go test:*)"]},
+  "env": {"SOME_API_KEY": "SECRET_SETTINGS_ENV_VALUE"}
+}

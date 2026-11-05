@@ -1,0 +1,26 @@
+---
+/**
+ * A glossary body: `code` becomes a code element and [[id]] or [[id|words]]
+ * a link to that term. A link to a term that does not exist fails the build.
+ */
+import { terms } from '../../data/glossary';
+
+interface Props { text: string }
+
+type Part = { text: string } | { code: string } | { href: string; label: string };
+
+const byId = new Map(terms.map((t) => [t.id, t]));
+const parts: Part[] = Astro.props.text.split(/(`[^`]+`|\[\[[^\]]+\]\])/).filter(Boolean).map((p) => {
+  if (p.startsWith('`')) return { code: p.slice(1, -1) };
+  if (p.startsWith('[[')) {
+    const [id, words] = p.slice(2, -2).split('|');
+    const t = byId.get(id);
+    if (!t) throw new Error(`glossary link to unknown term ${id}`);
+    // Mid-sentence, "Tool calling" reads as "tool calling"; "KV cache" and "MCP" keep their capitals.
+    const name = /^[A-Z][a-z]/.test(t.term) ? t.term[0].toLowerCase() + t.term.slice(1) : t.term;
+    return { href: `#${id}`, label: words ?? name };
+  }
+  return { text: p };
+});
+---
+{parts.map((p) => ('code' in p ? <code>{p.code}</code> : 'href' in p ? <a href={p.href}>{p.label}</a> : p.text))}

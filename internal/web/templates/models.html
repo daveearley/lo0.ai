@@ -1,0 +1,19 @@
+{{define "content"}}{{with .Content}}
+<header class="head">
+<h1>What can you run, and how fast?</h1>
+<p class="sub">{{.Basis}}</p>
+</header>
+<nav class="filters" aria-label="Show">{{range .Filters}}<a href="{{.Href}}"{{if .Current}} aria-current="page"{{end}}>{{.Label}}<span>{{.Count}}</span></a>{{end}}</nav>
+{{with .Empty}}<p class="empty">{{.}}</p>{{end}}
+{{if .Rows}}<div class="models">
+<div class="row th" aria-hidden="true"><span>Model</span><span>Your sessions</span><span class="r">Speed</span><span></span><span class="r">Tier</span><span>Memory</span></div>
+{{range .Rows}}<a class="row{{if .TooLarge}} large{{end}}" href="{{.Href}}">
+<span class="name">{{.Name}}{{if .Installed}}<em>installed</em>{{end}}</span>
+<span class="cell">{{if not .TooLarge}}<span class="meter tone-{{.SessionTone}}" style="{{share .SessionShare}}"><i></i></span><span class="num">{{.Sessions}}</span>{{end}}</span>
+<span class="num r">{{.Speed}}</span>
+<span class="pace tone-{{.PaceTone}}">{{.Pace}}</span>
+<span class="r tier">{{.Tier}}</span>
+<span class="cell mem">{{if not .TooLarge}}<span class="meter quiet" style="{{share .MemoryShare}}"><i></i></span>{{end}}<span class="num">{{.Memory}}</span></span>
+</a>{{end}}
+</div>{{end}}
+{{end}}{{end}}

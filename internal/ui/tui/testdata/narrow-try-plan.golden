@@ -1,0 +1,24 @@
+  lo0  ›  Models             Apple M5 Pro · 48 GiB for models · Ollama running
+  
+  Try Coder-30B-A3B in Claude Code on a local model
+  
+  Plan
+    Harness       Claude Code on a local model
+    Model         Coder-30B-A3B · Q4_K_M · 256k window
+    Background    Small-2B · Q8_0 · 256k window
+    Runtime       Ollama · http://127.0.0.1:11434
+    Served as     lo0/coder-30b-a3b:256k
+                  lo0/small-2b:256k
+  
+  Steps
+    ✓  Coder-30B-A3B at Q4_K_M is already in Ollama
+    1  Create lo0/coder-30b-a3b:256k with a 256k context window
+       num_ctx 262,144
+    2  Download Small-2B at Q8_0                                       2.3 GiB
+       ollama pull hf.co/someone/Small-2B-GGUF:Q8_0
+    3  Create lo0/small-2b:256k with a 256k context window
+       num_ctx 262,144
+    4  Check that Ollama answers as lo0/coder-30b-a3b:256k
+       POST http://127.0.0.1:11434/v1/messages
+  
+  enter run it   ↑↓ scroll   esc back

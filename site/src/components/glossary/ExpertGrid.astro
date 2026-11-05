@@ -1,0 +1,133 @@
+---
+/**
+ * One layer of a mixture-of-experts model choosing 8 of its 128 experts for
+ * each token of a line of code. Pure CSS: each cell gets a keyframe set for
+ * the frames it is lit in. With reduced motion, the first token stays.
+ */
+import Figure from './Figure.astro';
+import { model, billions, statedActive } from '../../data/models';
+
+const m = model('qwen3-coder-30b-a3b');
+// From the model card: 128 experts in each layer, 8 chosen per token.
+const experts = 128;
+const chosen = 8;
+const tokens = ['def', ' parse', '_args', '(', 'argv', '):'];
+const frames = tokens.length;
+const frameSeconds = 1.1;
+
+// A fixed seed, so every build draws the same picks.
+function rng(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = rng(30);
+const masks = new Array<number>(experts).fill(0);
+for (let f = 0; f < frames; f++) {
+  const picked = new Set<number>();
+  while (picked.size < chosen) picked.add(Math.floor(rand() * experts));
+  for (const e of picked) masks[e] |= 1 << f;
+}
+
+/** Keyframes that hold `on` during the frames set in mask and `off` otherwise. */
+function keyframes(name: string, mask: number, on: string, off: string) {
+  const steps: string[] = [];
+  for (let f = 0; f < frames; f++) {
+    const s = (f / frames) * 100;
+    const e = ((f + 1) / frames) * 100 - 1.2;
+    const v = mask & (1 << f) ? on : off;
+    steps.push(`${s.toFixed(2)}%,${e.toFixed(2)}%{${v}}`);
+  }
+  steps.push(`100%{${mask & 1 ? on : off}}`);
+  return `@keyframes ${name}{${steps.join('')}}`;
+}
+
+const lit = 'background-color:var(--accent);box-shadow:0 0 0 1px var(--accent)';
+const dark = 'background-color:var(--bg-sunk);box-shadow:0 0 0 1px var(--rule)';
+const used = [...new Set(masks.filter(Boolean))];
+const tokenOn = 'color:var(--ink);background-size:100% 2px';
+const tokenOff = 'color:var(--ink-3);background-size:0 2px';
+const css =
+  `@media (prefers-reduced-motion:no-preference){` +
+  used.map((k) => keyframes(`ex-${k}`, k, lit, dark) + `.grid [data-m='${k}']{animation:ex-${k} ${frames * frameSeconds}s linear infinite}`).join('') +
+  tokens.map((_, i) => keyframes(`tk-${i}`, 1 << i, tokenOn, tokenOff) + `.line [data-t='${i}']{animation:tk-${i} ${frames * frameSeconds}s linear infinite}`).join('') +
+  `}`;
+---
+<Figure title="Each token picks its own 8 experts out of 128" for="moe">
+  <style is:inline set:html={css}></style>
+  <div class="moe">
+    <p class="line" aria-hidden="true">
+      {tokens.map((t, i) => <span data-t={i} class:list={[{ on: i === 0 }]}>{t.replace(/ /g, ' ')}</span>)}
+    </p>
+    <div class="grid" role="img" aria-label={`A grid of ${experts} experts in one layer, ${chosen} of them lit for each token in turn.`}>
+      {masks.map((k) => <i data-m={k || undefined} class:list={[{ on: (k & 1) === 1 }]}></i>)}
+    </div>
+    <dl class="facts">
+      <div><dt>Stored</dt><dd class="tnum">{billions(m.params)}</dd></div>
+      <div><dt>Used per token</dt><dd class="tnum accent">{billions(statedActive(m))}</dd></div>
+      <div><dt>Experts per layer</dt><dd class="tnum">{chosen} of {experts}</dd></div>
+    </dl>
+  </div>
+  <Fragment slot="note">
+    One of {m.name}’s {m.attention.fullLayers} layers. Every layer makes its own choice for every
+    token, so over a session all the experts get used. They all have to stay in memory, even though
+    each token only reads a few of them. Expert counts from the model card; the picks shown are
+    illustrative.
+  </Fragment>
+</Figure>
+
+<style>
+  .moe { display: grid; gap: 1.5rem; }
+
+  .line {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+
+    & span {
+      padding-bottom: 0.15em;
+      color: var(--ink-3);
+      background: linear-gradient(var(--accent), var(--accent)) bottom left / 0 2px no-repeat;
+    }
+    & span.on { color: var(--ink); background-size: 100% 2px; }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    gap: clamp(3px, 0.6vw, 6px);
+    max-width: 34rem;
+
+    & i {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      background: var(--bg-sunk);
+      box-shadow: 0 0 0 1px var(--rule);
+    }
+    & i.on { background: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, max-content));
+    gap: 0.5rem clamp(1.5rem, 1rem + 3vw, 3.5rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+
+    & dt { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+    & dd {
+      font-size: var(--step-2);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      font-variation-settings: 'wdth' 88;
+    }
+    & .accent { color: var(--accent); }
+  }
+
+  @media (width < 30rem) {
+    .facts { grid-template-columns: 1fr 1fr; }
+  }
+</style>

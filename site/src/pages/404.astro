@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Not found · lo0" description="There is no page at this address.">
+  <section class="wrap nf">
+    <p class="eyebrow">404</p>
+    <h1>Sent to an address that does not exist.</h1>
+    <p>Like anything sent to <code>lo0</code>, it came straight back. Try the <a href="/">home page</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    gap: 1.25rem;
+    align-content: center;
+    min-height: 60dvh;
+    padding-block: var(--section);
+
+    & h1 { font-size: var(--step-4); max-width: 16ch; }
+    & p:last-child { color: var(--ink-2); font-size: var(--step-1); }
+  }
+</style>

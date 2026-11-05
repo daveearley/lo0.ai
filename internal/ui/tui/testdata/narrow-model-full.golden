@@ -1,0 +1,24 @@
+  lo0  ›  Models             Apple M5 Pro · 48 GiB for models · Ollama running
+  
+  What can you run, and how well?
+  
+  Coder-30B-A3B  ✓ installed                       lab · Apache 2.0 · Jan 2026
+  A Coder-30B-A3B model built for testing lo0.                                
+                                                                              
+  GOOD AT                                 WATCH OUT FOR                       
+  + Tool calling in long agent loops      – Needs its own tool-call parser    
+  + Small active parameter count                                              
+                                                                              
+  SCORES  SWE-bench Verified 61.0  ·  MCPMark 37.0                            
+  From the model card: https://huggingface.co/lab/Coder-30B-A3B               
+                                                                              
+  ON THIS MACHINE                                                             
+  Memory     ████████████████████████████████████░░░░░  42.7 GiB of 48 GiB    
+             ■ weights 17.2 GiB   ■ KV cache 24 GiB   ■ runtime 1.5 GiB       
+  Sessions    ▄▄█▄▄▄█▄▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█  62% fit               
+                                       ┊ 256k                                 
+  Writing    8k 60   105k 10   256k 4  tok/s                                  
+  Reading    8k 437   105k 40   256k 16  tok/s, new tokens at that context    
+             estimated from llama.cpp's results for this chip                 
+  
+  ↑↓ scroll   esc back to list   ctrl+k commands   ? keys

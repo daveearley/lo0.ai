@@ -1,0 +1,459 @@
+---
+import Base from '../layouts/Base.astro';
+import InstallTabs from '../components/InstallTabs.astro';
+import NameDecoder from '../components/glossary/NameDecoder.astro';
+import ExpertGrid from '../components/glossary/ExpertGrid.astro';
+import QuantLadder from '../components/glossary/QuantLadder.astro';
+import ContextCost from '../components/glossary/ContextCost.astro';
+import TokenSpeed from '../components/glossary/TokenSpeed.astro';
+import Rich from '../components/glossary/Rich.astro';
+import { sections, terms, type Figure } from '../data/glossary';
+import { catalogueDate } from '../data/models';
+import catalog from '../../../internal/catalog/catalog.json';
+import { site } from '../site';
+
+const figures: Record<Figure, typeof ExpertGrid> = {
+  experts: ExpertGrid,
+  quants: QuantLadder,
+  context: ContextCost,
+  speed: TokenSpeed,
+};
+
+const byId = new Map(terms.map((t) => [t.id, t]));
+/** A body without its marks, for search and structured data. */
+const plain = (s: string) =>
+  s.replace(/`([^`]+)`/g, '$1').replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, id, words) => words ?? byId.get(id)?.term ?? id);
+
+const url = `${site.url}/glossary`;
+const title = 'Local LLM glossary: MoE, GGUF, Q4_K_M and KV cache explained · lo0';
+const description =
+  'Plain explanations of local AI terms, from 30B-A3B and Q4_K_M to KV cache, tok/s, tool calling and SWE-bench, with interactive figures drawn from real model data.';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'The local AI glossary',
+    description,
+    url,
+    dateModified: catalog.generated,
+    inLanguage: 'en-GB',
+    author: { '@type': 'Person', name: site.author },
+    publisher: { '@type': 'Organization', name: site.name, url: site.url },
+    about: ['Large language models', 'Local AI', 'Quantisation', 'Coding agents'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': `${url}#terms`,
+    name: 'Local AI glossary',
+    url,
+    hasDefinedTerm: terms.map((t) => ({
+      '@type': 'DefinedTerm',
+      '@id': `${url}#${t.id}`,
+      name: t.term,
+      ...(t.aka ? { alternateName: t.aka } : {}),
+      description: `${t.short} ${plain(t.body)}`,
+      url: `${url}#${t.id}`,
+      inDefinedTermSet: `${url}#terms`,
+    })),
+  },
+];
+
+const az = [...terms].sort((a, b) => a.term.localeCompare(b.term, 'en', { sensitivity: 'base' }));
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <header class="wrap hero">
+    <p class="eyebrow">Glossary · {terms.length} terms</p>
+    <h1>The local AI glossary</h1>
+    <p class="lede">
+      What 30B-A3B, Q4_K_M, KV cache and the rest of a model card mean, and which of them decide
+      whether a model runs well on your machine. The figures use real numbers from lo0’s model catalogue.
+    </p>
+    <p class="meta">Updated {catalogueDate} · <a href="#a-z">All terms A–Z</a></p>
+  </header>
+
+  <section class="wrap decode" aria-labelledby="decode-title">
+    <h2 id="decode-title" class="decode-title">Start with a file name. Pick any part of it.</h2>
+    <NameDecoder />
+  </section>
+
+  <div class="wrap layout" data-layout>
+    <aside class="side">
+      <div class="search" data-search hidden>
+        <label for="q" class="visually-hidden">Search the glossary</label>
+        <input id="q" type="search" placeholder="Search terms" autocomplete="off" spellcheck="false" />
+        <kbd aria-hidden="true">/</kbd>
+      </div>
+      <p class="count" data-count aria-live="polite"></p>
+      <nav aria-label="Sections">
+        <ol role="list" class="toc">
+          {sections.map((s, i) => (
+            <li data-toc={s.id}>
+              <a href={`#${s.id}`}><span class="n">{pad(i + 1)}</span>{s.title}<span class="c tnum" data-toc-count>{s.terms.length}</span></a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </aside>
+
+    <div class="content">
+      {sections.map((s, i) => (
+        <section class="group" id={s.id} data-group aria-labelledby={`${s.id}-title`}>
+          <header class="group-head">
+            <p class="n">{pad(i + 1)}</p>
+            <h2 id={`${s.id}-title`}>{s.title}</h2>
+            <p class="intro">{s.intro}</p>
+          </header>
+
+          {s.terms.map((t) => {
+            const Fig = t.figure ? figures[t.figure] : null;
+            return (
+              <div class="entry" data-entry data-text={[t.term, ...(t.aka ?? []), t.short, plain(t.body), ...(t.seen ?? [])].join(' ').toLowerCase()}>
+                <article class="term" id={t.id}>
+                  <div class="term-head">
+                    <h3><a href={`#${t.id}`}>{t.term}</a></h3>
+                    {t.aka && <p class="aka">{t.aka.join(' · ')}</p>}
+                  </div>
+                  <div class="term-body">
+                    <p class="short">{t.short}</p>
+                    <p class="long"><Rich text={t.body} /></p>
+                    {t.seen && (
+                      <p class="seen">
+                        <span class="seen-label">You’ll see</span>
+                        {t.seen.map((x) => <code>{x}</code>)}
+                      </p>
+                    )}
+                  </div>
+                </article>
+                {Fig && <Fig />}
+              </div>
+            );
+          })}
+        </section>
+      ))}
+
+      <p class="empty" data-empty hidden>
+        No term matches “<span data-empty-q></span>”. Try a shorter word, or <a href="#a-z">browse A–Z</a>.
+      </p>
+
+      <section class="az" id="a-z" aria-labelledby="a-z-title">
+        <h2 id="a-z-title">All terms, A–Z</h2>
+        <ul role="list">
+          {az.map((t) => <li><a href={`#${t.id}`}>{t.term}</a></li>)}
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="section cta">
+    <div class="wrap cta-grid">
+      <div class="cta-copy">
+        <p class="eyebrow">lo0</p>
+        <h2>Do the sums for your own machine</h2>
+        <p>
+          lo0 reads your hardware and your Claude Code and Codex history, then works out which models
+          fit, how much of your work their context covers and how fast they would write. It changes
+          nothing until you say so.
+        </p>
+      </div>
+      <div class="cta-install">
+        <InstallTabs name="glossary-install" />
+        <p class="cta-note">Then run <code>lo0</code>. <a href="/guides/claude-code-local-model">Run Claude Code on a local model</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Filters the entries as you type. Without JavaScript the search box stays
+  // hidden and every term shows.
+  const box = document.querySelector<HTMLElement>('[data-search]');
+  const input = document.querySelector<HTMLInputElement>('#q');
+  const count = document.querySelector<HTMLElement>('[data-count]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const emptyQ = document.querySelector<HTMLElement>('[data-empty-q]');
+  const entries = [...document.querySelectorAll<HTMLElement>('[data-entry]')];
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-group]')];
+  const layout = document.querySelector<HTMLElement>('[data-layout]');
+
+  if (box && input && count && empty && emptyQ) {
+    box.hidden = false;
+    const total = entries.length;
+
+    const apply = () => {
+      const words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      let shown = 0;
+      for (const e of entries) {
+        const hit = words.every((w) => e.dataset.text!.includes(w));
+        e.hidden = !hit;
+        if (hit) shown++;
+      }
+      for (const g of groups) {
+        const n = g.querySelectorAll('[data-entry]:not([hidden])').length;
+        g.hidden = n === 0;
+        const toc = document.querySelector<HTMLElement>(`[data-toc="${g.id}"]`);
+        if (toc) {
+          toc.toggleAttribute('data-none', n === 0);
+          toc.querySelector('[data-toc-count]')!.textContent = String(n);
+        }
+      }
+      count.textContent = words.length ? `${shown} of ${total} terms` : '';
+      empty.hidden = shown > 0;
+      emptyQ.textContent = input.value.trim();
+      // Filtering shortens the page; bring the results back into view.
+      const top = (layout?.getBoundingClientRect().top ?? 0) - 80;
+      if (top < 0) window.scrollBy({ top, behavior: 'instant' });
+    };
+
+    input.addEventListener('input', apply);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        input.value = '';
+        apply();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key === '/' && !e.metaKey && !e.ctrlKey && !t.closest('input, textarea, [contenteditable]')) {
+        e.preventDefault();
+        input.focus();
+      }
+    });
+    // A link to a hidden term clears the search first.
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+      const target = a && document.getElementById(a.hash.slice(1));
+      if (target?.closest('[hidden]') && input.value) {
+        input.value = '';
+        apply();
+      }
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 1.1rem;
+    padding-block: clamp(3rem, 2rem + 5vw, 6.5rem) clamp(2rem, 1.5rem + 2vw, 3rem);
+
+    & h1 { font-size: var(--step-4); max-width: 14ch; }
+    & .lede { font-size: var(--step-1); color: var(--ink-2); max-width: 58ch; line-height: 1.5; }
+    & .meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+  }
+
+  .decode {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) + 4px);
+    background: var(--surface);
+  }
+
+  .decode-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--ink-3);
+    font-variation-settings: normal;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) var(--section);
+  }
+
+  .side {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .search {
+    position: relative;
+
+    & input {
+      width: 100%;
+      padding: 0.55rem 2.25rem 0.55rem 0.8rem;
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      font-size: 0.9375rem;
+      transition: border-color 160ms, box-shadow 160ms;
+
+      &::placeholder { color: var(--ink-3); }
+      &:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      &::-webkit-search-cancel-button { display: none; }
+    }
+
+    & kbd {
+      position: absolute;
+      right: 0.55rem;
+      top: 50%;
+      translate: 0 -50%;
+      padding: 0 0.4rem;
+      border: 1px solid var(--rule-strong);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+    & input:focus + kbd, & input:not(:placeholder-shown) + kbd { display: none; }
+  }
+
+  .search[hidden] { display: none; }
+
+  .count { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); min-height: 1.1em; margin-top: -0.4rem; }
+
+  .toc {
+    display: grid;
+    gap: 0.1rem;
+    font-size: 0.9375rem;
+
+    & a {
+      display: grid;
+      grid-template-columns: 1.75rem 1fr auto;
+      align-items: baseline;
+      padding: 0.3rem 0;
+      color: var(--ink-2);
+      text-decoration: none;
+      transition: color 160ms;
+      &:hover { color: var(--ink); }
+    }
+    & .n, & .c { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+    & [data-none] a { opacity: 0.4; pointer-events: none; }
+  }
+
+  .group { scroll-margin-top: 5rem; }
+  .group + .group { margin-top: clamp(3.5rem, 2.5rem + 3vw, 5.5rem); }
+  .group[hidden] { display: none; }
+
+  .group-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    column-gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule-strong);
+
+    & .n { font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent); }
+    & h2 { font-size: var(--step-3); }
+    & .intro { grid-column: 2; color: var(--ink-2); margin-top: 0.5rem; }
+  }
+
+  .entry[hidden] { display: none; }
+  .entry + .entry .term { border-top: 1px solid var(--rule); }
+
+  .term {
+    display: grid;
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    gap: 0.75rem clamp(1.5rem, 1rem + 2vw, 3rem);
+    padding-block: 1.75rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .term-head { display: grid; align-content: start; gap: 0.4rem; }
+
+  .term h3 {
+    font-size: var(--step-1);
+
+    & a {
+      position: relative;
+      text-decoration: none;
+
+      &::after {
+        content: '#';
+        position: absolute;
+        margin-left: 0.35em;
+        color: var(--ink-3);
+        font-weight: 400;
+        opacity: 0;
+        transition: opacity 160ms;
+      }
+      &:hover::after, &:focus-visible::after { opacity: 1; }
+    }
+  }
+
+  .term:target h3 a {
+    background: linear-gradient(var(--accent-soft), var(--accent-soft)) 0 60% / 100% 0.55em no-repeat;
+  }
+
+  .aka { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); line-height: 1.5; }
+
+  .term-body { display: grid; gap: 0.7rem; max-width: 62ch; }
+  .short { font-size: var(--step-1); line-height: 1.45; color: var(--ink); text-wrap: pretty; }
+  .long { color: var(--ink-2); }
+
+  .seen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+
+    & code { white-space: nowrap; }
+  }
+  .seen-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); margin-right: 0.35rem; }
+
+  .empty { padding-block: 2rem; color: var(--ink-2); }
+  .empty[hidden] { display: none; }
+
+  .az {
+    margin-top: clamp(4rem, 3rem + 3vw, 6rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule-strong);
+    scroll-margin-top: 5rem;
+
+    & h2 { font-size: var(--step-2); margin-bottom: 1.25rem; }
+    & ul { columns: 13rem; column-gap: 2rem; font-size: 0.9375rem; }
+    & li { break-inside: avoid; padding-block: 0.15rem; }
+    & a { color: var(--ink-2); text-decoration: none; &:hover { color: var(--ink); text-decoration: underline; } }
+  }
+
+  .cta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+  }
+  .cta-copy {
+    display: grid;
+    gap: 1rem;
+    & h2 { font-size: var(--step-3); }
+    & p:not(.eyebrow) { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; max-width: 48ch; }
+  }
+  .cta-install { display: grid; gap: 0.9rem; min-width: 0; }
+  .cta-note { font-size: var(--step--1); color: var(--ink-3); }
+
+  @media (width < 60rem) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+    .side {
+      top: 4rem;
+      z-index: 5;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 0.75rem var(--gutter);
+      background: color-mix(in oklch, var(--bg) 90%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      gap: 0.4rem;
+    }
+    .side nav { display: none; }
+    .side:has(.search[hidden]) { display: none; }
+    .count:empty { display: none; }
+    .count { margin-top: 0; }
+    .cta-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (width < 44rem) {
+    .term { grid-template-columns: minmax(0, 1fr); padding-block: 1.5rem; }
+    .group-head { grid-template-columns: minmax(0, 1fr); & .intro { grid-column: 1; } }
+  }
+</style>

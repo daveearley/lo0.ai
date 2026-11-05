@@ -1,0 +1,32 @@
+{{define "content"}}{{with .Content}}
+<header class="head verdict tone-{{.LevelTone}}">
+<p class="eyebrow"><span class="level">{{.Level}}</span>{{with .Score}}<span class="sep">·</span>{{.}}{{end}}</p>
+<h1>{{.Headline}}</h1>
+{{with .Summary}}<p class="lead">{{.}}</p>{{end}}
+{{with .Reasons}}<ul class="reasons" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+</header>
+{{with .Empty}}<p class="empty">{{.}}</p>{{else}}
+
+<section class="tone-{{.Tone}}"><h2 class="label">Peak context, every session</h2>
+{{if .HasCurve}}<div class="tall">{{template "curve" .Curve}}</div>{{end}}
+<p class="legend">{{.Context}}</p>
+</section>
+
+{{with .Months}}<section class="tone-{{$.Content.Tone}}"><h2 class="label">By month</h2>
+<ol class="months" role="list">{{range .}}<li style="{{height .Height}}" title="{{.Sessions}} sessions · {{.Fits}}"><span class="col"><i style="{{height .FitShare}}"></i></span><span class="m">{{.Label}}</span><span class="n">{{.Sessions}}</span></li>{{end}}</ol>
+<p class="note">Sessions each month; the filled part fits in the best model’s window.</p>
+</section>{{end}}
+
+<div class="pair">
+{{with .Repos}}<section><h2 class="label">Where</h2>{{template "bars" .}}</section>{{end}}
+{{with .Tools}}<section><h2 class="label">Tools</h2>{{template "bars" .}}</section>{{end}}
+</div>
+{{if or .MCP .Models}}<div class="pair">
+{{with .Models}}<section><h2 class="label">Hosted models</h2>{{template "bars" .}}</section>{{end}}
+{{with .MCP}}<section><h2 class="label">MCP servers</h2>{{template "bars" .}}</section>{{end}}
+</div>{{end}}
+
+{{template "facts" .Habits}}
+{{with .Cost}}{{template "facts" .}}{{end}}
+{{end}}
+{{end}}{{end}}

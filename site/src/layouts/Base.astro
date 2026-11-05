@@ -1,0 +1,95 @@
+---
+import '@fontsource-variable/instrument-sans/standard.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+import sansLatin from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-standard-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Structured data for the page, written as JSON-LD. */
+  jsonLd?: object[];
+  /** A 1200×630 social card, relative to the site root. */
+  image?: string;
+  imageAlt?: string;
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  jsonLd = [],
+  image = '/og.png',
+  imageAlt = 'lo0: self-hosted AI for coding, set up for your machine',
+} = Astro.props;
+// The build writes pages as files, so the path can end in .html; the site
+// serves them without it.
+const canonical = new URL(Astro.url.pathname.replace(/(\/index)?\.html$/, '') || '/', site.url);
+const ogImage = new URL(image, site.url);
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+};
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={sansLatin} as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAF9F6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1114" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="lo0" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    <meta name="author" content={site.author} />
+    {/* Lets `go install lo0.ai/lo0/...` find the source. Go reads this tag from any page, the 404 included. */}
+    <meta name="go-import" content={`${site.module} git ${site.repo}`} />
+    <meta name="go-source" content={`${site.module} ${site.repo} ${site.repo}/tree/main{/dir} ${site.repo}/blob/main{/dir}/{file}#L{line}`} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    {[website, ...jsonLd].map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -3rem;
+    z-index: 20;
+    padding: 0.5rem 0.9rem;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    &:focus { top: 0.75rem; }
+  }
+</style>

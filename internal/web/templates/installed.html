@@ -1,0 +1,16 @@
+{{define "content"}}{{with .Content}}
+<header class="head">
+<h1>What is on this machine</h1>
+<p class="sub">{{.Summary}}</p>
+</header>
+{{range .Runtimes}}<section class="runtime">
+<h2><span>{{.Name}}</span><span class="state{{if .Running}} on{{end}}">{{.State}}</span></h2>
+{{if .Models}}<ul class="disk" role="list">{{range .Models}}
+<li{{if .Child}} class="child"{{end}}><code>{{.Name}}</code><span class="known">{{.Known}}{{with .Quant}} <span class="quant">{{.}}</span>{{end}}</span><span class="num">{{.Size}}</span>{{with .Note}}<span class="note">{{.}}</span>{{end}}</li>{{end}}
+</ul>{{else}}<p class="note">No models yet.</p>{{end}}
+</section>{{else}}<p class="empty">No local runtime is installed. lo0 looks for Ollama, LM Studio and llama.cpp.</p>{{end}}
+{{with .Changes}}<section><h2 class="label">What lo0 changed</h2>
+<ul class="changes" role="list">{{range .}}<li>{{.}}</li>{{end}}</ul>
+<div class="try">{{template "command" "lo0 migrate --undo"}}<p class="note">Reverses every change listed here, after showing the plan.</p></div>
+</section>{{end}}
+{{end}}{{end}}

@@ -1,0 +1,254 @@
+name: nightly
+
+# Runs every night, and on demand, to catch what changes without a commit:
+# models on Hugging Face, new Claude Code releases, newly published
+# vulnerabilities, runner images, the live site and the real runtimes and
+# harnesses lo0 drives. A failure opens or updates one issue.
+
+on:
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  catalog:
+    name: refresh the model catalogue
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - name: Regenerate catalog.json from sources.json and Hugging Face
+        id: generate
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          go generate ./internal/catalog 2> >(tee "$RUNNER_TEMP/gencatalog.log" >&2)
+          # The date it was generated changes every run; only a change to
+          # the models themselves is worth a pull request.
+          if git diff --quiet -I '^  "generated": ' -- internal/catalog/catalog.json; then
+            git checkout -- internal/catalog/catalog.json
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Test against the new catalogue
+        id: test
+        if: steps.generate.outputs.changed == 'true'
+        continue-on-error: true
+        run: go test ./... 2>&1 | tee "$RUNNER_TEMP/test.log"
+      - name: Write the pull request description
+        if: steps.generate.outputs.changed == 'true'
+        env:
+          TESTS: ${{ steps.test.outcome }}
+          FENCE: '```'
+        run: |
+          {
+            cat <<'EOF'
+          The nightly run regenerated `internal/catalog/catalog.json` from `sources.json` and the Hugging Face API, and the models changed.
+
+          Before merging, check each changed score and size against the model card it links to. Tiers and "good at" lines come from `sources.json` and need a person to change.
+
+          ### What changed
+
+          EOF
+            echo "$FENCE"
+            git diff --stat -- internal/catalog/catalog.json
+            printf '%s\n\n### Generator notes\n\n%s\n' "$FENCE" "$FENCE"
+            cat "$RUNNER_TEMP/gencatalog.log"
+            printf '%s\n\n' "$FENCE"
+            if [ "$TESTS" = success ]; then
+              echo 'go test ./... passes with the new catalogue.'
+            else
+              printf '**go test ./... fails with the new catalogue.** The end of the log:\n\n%s\n' "$FENCE"
+              tail -n 60 "$RUNNER_TEMP/test.log"
+              echo "$FENCE"
+            fi
+            printf '\nFrom nightly run %s/%s/actions/runs/%s.\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+          } > "$RUNNER_TEMP/pr.md"
+      - name: Open or update the pull request
+        if: steps.generate.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
+        with:
+          # Pull requests opened with the default token do not start other
+          # workflows, so CI runs on them only when LO0_BOT_TOKEN is set.
+          token: ${{ secrets.LO0_BOT_TOKEN || github.token }}
+          branch: nightly/catalog
+          delete-branch: true
+          add-paths: internal/catalog/catalog.json
+          commit-message: Refresh the model catalogue from Hugging Face
+          title: Refresh the model catalogue from Hugging Face
+          body-path: ${{ runner.temp }}/pr.md
+          labels: catalog
+
+  claude-code:
+    name: newest Claude Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - name: Compare the newest release with the one lo0 was verified against
+        id: version
+        run: |
+          latest=$(npm view @anthropic-ai/claude-code version)
+          verified=$(sed -n 's/^const VerifiedVersion = "\(.*\)"$/\1/p' internal/claudecode/version.go)
+          test -n "$latest" && test -n "$verified"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          newest=$(printf '%s\n%s\n' "$latest" "$verified" | sort -V | tail -n 1)
+          if [ "$latest" != "$verified" ] && [ "$newest" = "$latest" ]; then
+            echo "newer=true" >> "$GITHUB_OUTPUT"
+            echo "Claude Code $latest is newer than VerifiedVersion $verified."
+          fi
+      - name: Open an issue to verify the new release
+        if: steps.version.outputs.newer == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.version.outputs.latest }}
+        run: |
+          title="Verify Claude Code $LATEST"
+          if [ -n "$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
+            exit 0
+          fi
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$(cat <<EOF
+          Claude Code $LATEST is on npm, newer than \`claudecode.VerifiedVersion\`. lo0 warns users who run it until it is checked.
+
+          Following AGENTS.md:
+
+          - [ ] Run lo0 against its files and check the setup inventory and \`lo0 scan --json\` for missing or zero fields
+          - [ ] Add any new transcript record types to \`transcript.KnownType\`
+          - [ ] Raise \`VerifiedVersion\` in the same commit and say what changed
+
+          The nightly run installed it and checked that lo0 reads its version: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+          EOF
+          )"
+      - name: Install it and check lo0 finds it and the newest release
+        env:
+          LATEST: ${{ steps.version.outputs.latest }}
+        run: |
+          npm install --global "@anthropic-ai/claude-code@$LATEST"
+          go run ./cmd/lo0 scan --json > "$RUNNER_TEMP/scan.json"
+          jq -e --arg v "$LATEST" '.result.claude.cli == $v and .result.claude.latest == $v' "$RUNNER_TEMP/scan.json" \
+            || { jq .result.claude "$RUNNER_TEMP/scan.json"; exit 1; }
+
+  vulnerabilities:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+            go.sum
+            tools/go.sum
+      - run: go tool -modfile=tools/go.mod govulncheck ./...
+
+  ollama:
+    name: real Ollama and ${{ matrix.harness }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { harness: claude-code, package: '@anthropic-ai/claude-code' }
+          - { harness: opencode, package: opencode-ai }
+    env:
+      MODEL: qwen3.5-2b
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - run: make build
+      - name: Install Ollama and ${{ matrix.harness }}
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          npm install --global "${{ matrix.package }}"
+          for _ in $(seq 60); do curl -fsS http://127.0.0.1:11434/api/version && break; sleep 1; done
+      - name: lo0 finds Ollama running
+        run: |
+          bin/lo0 scan --json > "$RUNNER_TEMP/scan.json"
+          jq -e '.result.runtimes[] | select(.id == "ollama") | .running' "$RUNNER_TEMP/scan.json"
+      - name: lo0 migrate downloads, creates and checks the model
+        run: bin/lo0 migrate --to ${{ matrix.harness }} --runtime ollama --model "$MODEL" --yes
+      - name: lo0 benchmark measures it
+        run: bin/lo0 benchmark --model "$MODEL" --yes
+      - name: Claude Code answers through claude-local
+        if: matrix.harness == 'claude-code'
+        run: |
+          out=$(timeout 15m "$HOME/.local/bin/claude-local" -p 'Reply with the single word: ready')
+          echo "$out"
+          test -n "$out"
+      - name: OpenCode answers through the model lo0 configured
+        if: matrix.harness == 'opencode'
+        run: |
+          out=$(timeout 15m opencode run 'Reply with the single word: ready')
+          echo "$out"
+          test -n "$out"
+      - name: lo0 migrate --undo removes everything it added
+        run: |
+          bin/lo0 migrate --undo --yes
+          # Ollama started empty, so it should be empty again.
+          left=$(ollama list | tail -n +2)
+          if [ -n "$left" ]; then printf 'Ollama still holds:\n%s\n' "$left"; exit 1; fi
+          bin/lo0 migrate --undo | grep -q 'nothing to undo'
+
+  release:
+    name: find the published release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      exists: ${{ steps.find.outputs.exists }}
+    steps:
+      - id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release is published yet, so the live quick start is skipped."
+          fi
+
+  quickstart:
+    needs: release
+    if: needs.release.outputs.exists == 'true'
+    uses: ./.github/workflows/quickstart.yml
+
+  report:
+    name: report failures
+    needs: [ci, catalog, claude-code, vulnerabilities, ollama, release, quickstart]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - run: |
+          title="Nightly checks are failing"
+          run="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          issue=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --repo "$GITHUB_REPOSITORY" --body "Failed again on $(date -u +%F): $run"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "The nightly run failed on $(date -u +%F): $run"
+          fi

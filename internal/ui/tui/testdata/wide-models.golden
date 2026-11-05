@@ -1,0 +1,36 @@
+  lo0                                                                Apple M5 Pro · 48 GiB for models · Ollama running
+  
+    1 Home            What can you run, and how well?                                                                 
+  ▌ 2 Models                                                                                                          
+    3 Harnesses       ● Fits 3    ○ Installed 2    ○ All 5                                           sort best for you
+    4 Installed                                                                                                       
+    5 Your Claude       MODEL                      YOUR SESSIONS         SPEED               TIER  MEMORY             
+                      ▌ Coder-30B-A3B ✓            ███████▌░░░░  62%    10 t/s  very slow    A     ████████▉░ 42.7 GiB
+                        General-27B                ███████▌░░░░  62%    10 t/s  very slow    B     █████▎░░░░ 25.2 GiB
+                        Hybrid-80B-A3B             █▋░░░░░░░░░░  14%    40 t/s  2.3× slower  A     ██████████   48 GiB
+                      ────────────────────────────────────────────────────────────────────────────────────────────────
+                      Coder-30B-A3B  ✓ installed                                           lab · Apache 2.0 · Jan 2026
+                      A Coder-30B-A3B model built for testing lo0.                                                    
+                                                                                                                      
+                      GOOD AT                                           WATCH OUT FOR                                 
+                      + Tool calling in long agent loops                – Needs its own tool-call parser              
+                      + Small active parameter count                                                                  
+                                                                                                                      
+                      SCORES  SWE-bench Verified 61.0  ·  MCPMark 37.0                                                
+                                                                                                                      
+                      ON THIS MACHINE                                                                                 
+                      Memory     ███████████████████████████████████████████░░░░░  42.7 GiB of 48 GiB                 
+                                 ■ weights 17.2 GiB   ■ KV cache 24 GiB   ■ runtime 1.5 GiB                           
+                      Sessions    ▄▄▄▄▄▄▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█  62% fit                            
+                                                               ┊ 256k                                                 
+                      Writing    8k 60   105k 10   256k 4  tok/s                                                      
+                      Reading    8k 437   105k 40   256k 16  tok/s, new tokens at that context                        
+                                 estimated from llama.cpp's results for this chip                                     
+                      Against    Opus 5.5 in Claude Code  ██████████████████████████████   96 tok/s      6s           
+                                 GPT-5.5 in Codex         ██████████████▏                  45 tok/s     10s           
+                                 Coder-30B-A3B            ███▏                             10 tok/s     54s  estimated
+                                 Seconds are for a typical reply, writing 565 tokens, the medians in your Claude Code 
+                                 sessions at 105k of context. Hosted speeds are measured from 22,974 Opus 5.5 and     
+                                 1,023 GPT-5.5 replies; Coder-30B-A3B's are estimated from llama.cpp's results for    
+  
+  ↑↓ model   enter details   c compare   f filter   s sort   / search   ctrl+k commands   ? keys

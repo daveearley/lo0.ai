@@ -1,0 +1,84 @@
+---
+interface Props { command: string; label?: string }
+const { command, label = 'Install' } = Astro.props;
+---
+<div class="copy">
+  <span class="label">{label}</span>
+  <code><span class="ps1" aria-hidden="true">$</span> <span class="text">{command}</span></code>
+  <button type="button" data-copy={command} aria-label={`Copy: ${command}`}>
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" class="i-copy"><rect x="5.25" y="5.25" width="8.5" height="8.5" rx="1.75" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 3V2.75A1.75 1.75 0 0 0 8.75 1h-6A1.75 1.75 0 0 0 1 2.75v6c0 .97.78 1.75 1.75 1.75H3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" class="i-done"><path d="M3 8.5l3.25 3.25L13 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <span class="status visually-hidden" role="status"></span>
+</div>
+
+<script>
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    btn.addEventListener('click', async () => {
+      const status = btn.parentElement?.querySelector('[role="status"]');
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.dataset.done = '';
+        if (status) status.textContent = 'Copied to clipboard';
+        setTimeout(() => { delete btn.dataset.done; if (status) status.textContent = ''; }, 1600);
+      } catch {
+        if (status) status.textContent = 'Copy failed. Select the command and copy it by hand.';
+      }
+    });
+  }
+</script>
+
+<style>
+  .copy {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    max-width: 100%;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 0.9rem;
+  }
+
+  .label {
+    flex: none;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+    padding-right: 0.9rem;
+    border-right: 1px solid var(--rule);
+  }
+
+  code {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    font-size: 0.875rem;
+    mask-image: linear-gradient(90deg, #000 calc(100% - 1.5rem), transparent);
+  }
+
+  .ps1 { color: var(--accent); user-select: none; }
+
+  button {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    color: var(--ink-2);
+    transition: background-color 160ms, color 160ms;
+
+    &:hover { background: var(--bg-sunk); color: var(--ink); }
+    & svg { grid-area: 1 / 1; transition: opacity 160ms, scale 200ms var(--ease-out); }
+    & .i-done { opacity: 0; scale: 0.6; color: var(--accent); }
+    &[data-done] .i-copy { opacity: 0; scale: 0.6; }
+    &[data-done] .i-done { opacity: 1; scale: 1; }
+  }
+
+  @media (width < 26rem) {
+    .label { display: none; }
+  }
+</style>

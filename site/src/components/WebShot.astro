@@ -1,0 +1,89 @@
+---
+/**
+ * A page of `lo0 web`, screenshotted in light and dark by scripts/screens.
+ * The picture follows the reader's colour scheme.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  light: ImageMetadata;
+  dark: ImageMetadata;
+  alt: string;
+  path?: string;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const { light, dark, alt, path = '/', loading = 'lazy', class: className } = Astro.props;
+const widths = [640, 960, 1440, 2160];
+const sizes = '(width < 60rem) 100vw, 46rem';
+const [l, d] = await Promise.all(
+  [light, dark].map((src) => getImage({ src, widths, format: 'webp', quality: 82 })),
+);
+---
+<figure class:list={['web', className]}>
+  <div class="bar" aria-hidden="true">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="url"><span class="host">127.0.0.1</span>{path}</span>
+  </div>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset={d.srcSet.attribute} sizes={sizes} type="image/webp" />
+    <img
+      src={l.src}
+      srcset={l.srcSet.attribute}
+      sizes={sizes}
+      width={light.width}
+      height={light.height}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+    />
+  </picture>
+</figure>
+
+<style>
+  .web {
+    min-width: 0;
+    border-radius: calc(var(--radius) + 2px);
+    border: 1px solid var(--rule-strong);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow:
+      0 30px 60px -32px oklch(20% 0.02 260 / 0.35),
+      0 12px 24px -14px oklch(20% 0.02 260 / 0.2);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-sunk);
+  }
+
+  .lights { display: flex; gap: 0.4rem; }
+  .lights i { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--rule-strong); }
+
+  .url {
+    flex: 1;
+    max-width: 22rem;
+    margin-inline: auto;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-3);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .host { color: var(--ink-2); }
+
+  img { width: 100%; height: auto; }
+</style>

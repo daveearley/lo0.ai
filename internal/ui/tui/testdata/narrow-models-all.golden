@@ -1,0 +1,24 @@
+  lo0  ›  Models             Apple M5 Pro · 48 GiB for models · Ollama running
+  
+  What can you run, and how well?
+  
+  ○ Fits 3    ○ Installed 2    ● All 5                       sort best for you
+  
+    MODEL                 YOUR SESSIONS     SPEED               TIER  MEMORY
+  ▌ Coder-30B-A3B ✓       █████░░░  62%    10 t/s  very slow    A     42.7 GiB
+    General-27B           █████░░░  62%    10 t/s  very slow    B     25.2 GiB
+    Hybrid-80B-A3B        █▏░░░░░░  14%    40 t/s  2.3× slower  A       48 GiB
+    Giant-480B            too large · needs 275 GiB
+    tiny:Q4_K_M ✓         not in the catalogue · 2.3 GiB
+  ────────────────────────────────────────────────────────────────────────────
+  Coder-30B-A3B  ✓ installed                       lab · Apache 2.0 · Jan 2026
+  A Coder-30B-A3B model built for testing lo0.                                
+                                                                              
+  GOOD AT                                 WATCH OUT FOR                       
+  + Tool calling in long agent loops      – Needs its own tool-call parser    
+  + Small active parameter count                                              
+                                                                              
+  SCORES  SWE-bench Verified 61.0  ·  MCPMark 37.0                            
+                                                                              
+  
+  ↑↓ model   enter details   c compare   f filter   s sort   / search   ctrl+…
