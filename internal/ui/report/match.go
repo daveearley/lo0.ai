@@ -20,9 +20,9 @@ import (
 const maxCandidatesShown = 6
 
 var levelLabels = map[match.Level]string{
-	match.LevelReady:     "Ready",
-	match.LevelTradeOffs: "Ready with trade-offs",
-	match.LevelNotYet:    "Not yet",
+	match.LevelReady:     "Local recommended",
+	match.LevelTradeOffs: "Local, with trade-offs",
+	match.LevelNotYet:    "Local not recommended",
 	match.LevelNoHistory: "No history yet",
 }
 
@@ -336,7 +336,7 @@ func unbreakable(s string) string {
 }
 
 // LevelLabel names a verdict level as every front end shows it, such as
-// "Ready with trade-offs".
+// "Local, with trade-offs".
 func LevelLabel(l match.Level) string {
 	return levelLabels[l]
 }
