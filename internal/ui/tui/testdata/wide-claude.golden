@@ -3,10 +3,10 @@
     1 Home            How much of your work can run locally?                                                          
   ▌ 2 Your sessions                                                                                                   
     3 Models          ████████████████████████████████████████████▍░░░░░░░░░░░░░░░  74 / 100                          
-    4 Agents          Ready with trade-offs                                                                           
+    4 Agents          Local, with trade-offs                                                                          
     5 This machine                                                                                                    
                       Verdict                                                                                         
-                        Answer        Ready with trade-offs · readiness 74 of 100                                     
+                        Answer        Local, with trade-offs · readiness 74 of 100                                    
                                       A local model can handle many of your sessions, with trade-offs.                
                                                                                                                       
                         Why           - Best fit is Coder-30B-A3B at Q4_K_M, which you already have: 62% of your      
