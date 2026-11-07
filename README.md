@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/home.png" alt="lo0's Home screen: 65% of the work can run on this machine, with a typical reply estimated at 45 seconds against 8 with Opus 5.5" width="760">
+  <img src="docs/assets/home.png" alt="lo0's Home screen: 65% of your sessions can run on this machine, ready with trade-offs, with a typical reply estimated at 45 seconds against 8 with Opus 5.5" width="760">
 </p>
 
 lo0 measures how much context your sessions reach, which tools and MCP servers they use, and how much model your hardware can hold. From that it works out which local models fit, what you would give up and how fast they would run. It can then set one up in Ollama, LM Studio or llama.cpp and start Claude Code, OpenCode or Codex on it.
