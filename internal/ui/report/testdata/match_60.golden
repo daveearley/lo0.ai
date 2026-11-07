@@ -1,0 +1,120 @@
+lo0 match                           4 Nov 2026 18:52 · 612ms
+
+Verdict
+  Answer        Not yet · readiness 58 of 100
+                Most of your sessions need more context than
+                a local model can hold on this machine.
+
+  Why           - Best fit is Small-2B at Q4_K_M: 27% of
+                  your sessions fit in its 256k window, at
+                  about 34 tokens a second.
+                - A typical reply takes 16s, against 6s with
+                  Opus 5.5 in your Claude Code sessions.
+                - Your median session peaks at 459k tokens
+                  and one in ten passes 811k. Sessions above
+                  the window would have to compact.
+                - One in ten of your requests chains 44 or
+                  more tool calls before it answers. Long
+                  chains are where local models most often
+                  lose track.
+                - 196 of your sessions had images, mostly
+                  screenshots from tools. Small-2B cannot
+                  read them.
+                - 7,682 calls went to the Claude apps'
+                  browser tools (Claude_Browser,
+                  claude-in-chrome). A browser MCP server
+                  can take over, but expect more retries
+                  from a local model.
+
+Models for this machine
+  Memory        48 GiB usable · 307 GB/s
+  Fits          model      window  fits  tok/s  tier  slower
+                Small-2B     256k   27%     34     C    2.7×
+                Hybrid-C…     64k    6%     40     A    2.3×
+                Qwen3-Co…    256k   27%      5     A     18×
+                Dense-Ge…    128k   13%      9     B    9.4×
+                ✓ already installed
+                slower than Opus 5.5 in your Claude Code
+                sessions, 96 tok/s
+                tok/s estimated from llama.cpp's results for
+                this chip
+  Too large     1 model needs more memory, starting with
+                Giant-480B at 275 GiB.
+  Unknown       qwen3.6, gemma-chat:2b are installed but not
+                in the catalogue, so lo0 cannot work out
+                their fit.
+
+Where Small-2B fits
+  Projects      ~/Code/app   50 sessions  28%  ███▍░░░░░░░░
+                ~/Code/site  25 sessions  28%  ███▍░░░░░░░░
+  By month      Jul 0% · Aug 0% · Sep 0% · Oct 74% · +1 more
+                share of sessions that fit in 256k
+
+What your Claude Code use is worth
+  API value     $5,934 since 8 Mar
+                $391 in the last 30 days
+  Your plan     Max at $100 a month. The last 30 days were
+                worth 3.9× that at API prices; extra usage
+                is on, so anything beyond the plan is billed
+                on top.
+  Prompt cache  99% of your input was read from the cache,
+                which saved $51,710 over sending it fresh.
+  Tokens        11.1 billion read · 38 million written
+  By model      Opus 5.5 $3,134 · Fable 5 $2,800
+  By month      Jul 2026    $231  ███▊
+                Aug 2026  $1,500  ████████████████████████
+                Sep 2026    $958  ███████████████▍
+                Oct 2026    $479  ███████▋
+                Nov 2026     $24  ▍
+  Going local   Small-2B could take 27% of your Claude Code
+                sessions, but only 6% of their API value
+                ($330). The longest sessions cost the most,
+                and they are the ones a local model cannot
+                hold.
+                Writing the 38 million output tokens in your
+                Claude Code history alone would keep it
+                generating for about 303 hours (13 days)
+                non-stop.
+Anthropic API list prices as of 5 Nov 2026 from
+platform.claude.com. Subagent sessions are included.
+
+What your Codex use is worth
+  API value     $317 since 25 Sep · $264 in the last 30 days
+  Your plan     ChatGPT Plus at $20 a month. The last 30
+                days were worth 13× that at API prices.
+  Prompt cache  91% of your input was read from the cache,
+                which saved $915 over sending it fresh.
+  Tokens        331 million read · 4.6 million written
+  By model      GPT-6-Astra $183 · GPT-5.2-Codex $134
+  By month      Sep 2026   $26  ██▏
+                Oct 2026  $291  ████████████████████████
+  Going local   Small-2B could take 100% of your Codex
+                sessions and >99% of their API value ($317).
+                Writing the 4.6 million output tokens in
+                your Codex history alone would keep it
+                generating for about 36 hours.
+OpenAI API list prices as of 6 Nov 2026 from
+developers.openai.com. Subagent sessions are included.
+
+Claude Code and Codex together
+  API value     $6,251 since 8 Mar
+                $629 in the last 30 days
+
+Carries over to Claude Code on a local model
+  Instructions  4 as is
+  MCP servers   5 as is
+  App tools     2 partly · 7,682 calls in your history
+  Hooks         4 as is
+  Commands      1 as is
+  Skills        2 as is
+  Plugins       1 as is
+  Permissions   2 as is
+  Instead       OpenCode: 3 as is · 13 converted · 4 partly…
+
+1 warning
+  setup         reading ~/.claude/settings.json: unexpected
+                end of JSON input
+
+Speeds are estimated at 229k tokens, halfway through your
+median session. Token counts are as Claude Code and Codex
+logged them. Catalogue of 4 Nov 2026.

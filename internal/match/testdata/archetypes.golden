@@ -1,0 +1,191 @@
+Top three picks per archetype: model, quant, KV cache, window, tok/s, coverage, expert layers in RAM.
+
+m1-8gb, short sessions: 5.3 GiB unified, trade-offs
+  1  gemma-4-e2b                    Q4_K_M  f16    128k    28 tok/s  100%
+  2  qwen3.5-2b                     Q4_K_M  f16    216k    31 tok/s  100%
+  3  gemma-4-e4b                    Q2_K    f16   65.4k    20 tok/s  100%
+
+m1-8gb, long sessions: 5.3 GiB unified, trade-offs
+  1  qwen3.5-2b                     Q4_K_M  f16    216k    15 tok/s   80%
+  2  gemma-4-e2b                    Q4_K_M  f16    128k    19 tok/s   35%
+  3  gemma-4-e4b                    Q2_K    f16   65.4k    12 tok/s   10%
+
+m2-16gb, short sessions: 10.7 GiB unified, trade-offs
+  1  gemma-4-e2b                    Q5_K_M  f16    128k    37 tok/s  100%
+  2  gemma-4-e4b                    Q4_K_M  f16    128k    21 tok/s  100%
+  3  qwen3.5-2b                     Q6_K    f16    256k    37 tok/s  100%
+
+m2-16gb, long sessions: 10.7 GiB unified, trade-offs
+  1  qwen3.5-2b                     Q6_K    f16    256k    21 tok/s   90%
+  2  gemma-4-e2b                    Q5_K_M  f16    128k    27 tok/s   35%
+  3  gemma-4-e4b                    Q6_K    f16    128k    11 tok/s   35%
+
+m4-24gb, short sessions: 16 GiB unified, trade-offs
+  1  qwen3.6-35b-a3b                Q2_K    f16   96.5k    32 tok/s  100%
+  2  gpt-oss-20b                    MXFP4   f16     71k    22 tok/s  100%
+  3  gemma-4-26b-a4b                Q3_K_M  f16    131k    25 tok/s  100%
+
+m4-24gb, long sessions: 16 GiB unified, trade-offs
+  1  gemma-4-26b-a4b                Q2_K    f16    256k    15 tok/s   90%
+  2  nemotron-3-nano-30b-a3b        Q2_K    f16    256k    34 tok/s   90%
+  3  qwen3.5-2b                     Q6_K    f16    256k    23 tok/s   90%
+
+m3-pro-36gb, short sessions: 24 GiB unified, ready
+  1  qwen3.6-35b-a3b                Q4_K_M  f16    110k    28 tok/s  100%
+  2  nemotron-3.5-lightning-30b-a3b Q5_K_M  f16    256k    35 tok/s  100%
+  3  glm-4.7-flash                  Q4_K_M  f16   94.4k    21 tok/s  100%
+
+m3-pro-36gb, long sessions: 24 GiB unified, trade-offs
+  1  nemotron-3.5-lightning-30b-a3b Q4_K_M  f16    256k    31 tok/s   90%
+  2  qwen3.6-35b-a3b                Q3_K_M  f16    256k    18 tok/s   90%
+  3  gemma-4-26b-a4b                Q5_K_M  f16    256k    15 tok/s   90%
+
+m4-pro-48gb, short sessions: 36 GiB unified, ready
+  1  qwen3.6-35b-a3b                Q6_K    f16    256k    35 tok/s  100%
+  2  glm-4.7-flash                  Q4_K_M  f16    198k    34 tok/s  100%
+  3  qwen3-coder-30b-a3b            Q5_K_M  f16    152k    32 tok/s  100%
+
+m4-pro-48gb, long sessions: 36 GiB unified, trade-offs
+  1  nemotron-3.5-lightning-30b-a3b Q6_K    f16    256k    41 tok/s   90%
+  2  qwen3.6-35b-a3b                Q5_K_M  f16    256k    25 tok/s   90%
+  3  gemma-4-26b-a4b                Q6_K    f16    256k    23 tok/s   90%
+
+m4-max-64gb, short sessions: 48 GiB unified, ready
+  1  glm-4.7-flash                  Q8_0    f16    198k    37 tok/s  100%
+  2  qwen3-coder-30b-a3b            Q6_K    f16    247k    48 tok/s  100%
+  3  qwen3.6-35b-a3b                Q8_0    f16    256k    46 tok/s  100%
+
+m4-max-64gb, long sessions: 48 GiB unified, ready
+  1  qwen3.6-35b-a3b                Q4_K_M  f16    256k    44 tok/s   90%
+  2  qwen3-coder-next               Q3_K_M  f16    256k    48 tok/s   90%
+  3  nemotron-3.5-lightning-30b-a3b Q8_0    f16    256k    55 tok/s   90%
+
+m5-pro-64gb, short sessions: 48 GiB unified, ready
+  1  glm-4.7-flash                  Q8_0    f16    198k    30 tok/s  100%
+  2  qwen3-coder-30b-a3b            Q8_0    f16    174k    34 tok/s  100%
+  3  qwen3.6-35b-a3b                Q8_0    f16    256k    36 tok/s  100%
+
+m5-pro-64gb, long sessions: 48 GiB unified, ready
+  1  qwen3.6-35b-a3b                Q5_K_M  f16    256k    33 tok/s   90%
+  2  qwen3-coder-next               Q3_K_M  f16    256k    38 tok/s   90%
+  3  nemotron-3.5-lightning-30b-a3b Q8_0    f16    256k    44 tok/s   90%
+
+m5-max-128gb, short sessions: 96 GiB unified, ready
+  1  glm-4.7-flash                  Q8_0    f16    198k    53 tok/s  100%
+  2  qwen3-coder-30b-a3b            Q8_0    f16    256k    61 tok/s  100%
+  3  qwen3-coder-next               Q8_0    f16    256k    77 tok/s  100%
+
+m5-max-128gb, long sessions: 96 GiB unified, ready
+  1  qwen3-coder-next               Q8_0    f16    256k    49 tok/s   90%
+  2  qwen3.6-35b-a3b                Q8_0    f16    256k    47 tok/s   90%
+  3  nemotron-3-super-120b-a12b     Q5_K_M  f16    256k    30 tok/s   90%
+
+rtx4060-8gb-ram16, short sessions: 8 GiB vram, trade-offs
+  1  qwen3.6-35b-a3b                Q2_K    f16   75.5k    38 tok/s  100%  27/40 in RAM
+  2  glm-4.7-flash                  Q3_K_M  f16   52.9k    19 tok/s   90%  38/46 in RAM
+  3  gemma-4-26b-a4b                Q4_K_M  f16   82.8k    20 tok/s  100%  23/30 in RAM
+
+rtx4060-8gb-ram16, long sessions: 8 GiB vram, trade-offs
+  1  qwen3.6-35b-a3b                Q2_K    f16    220k    21 tok/s   80%  37/40 in RAM
+  2  gemma-4-26b-a4b                Q3_K_M  f16    236k    16 tok/s   85%  29/30 in RAM
+  3  nemotron-3-nano-30b-a3b        Q3_K_M  f16    256k    27 tok/s   90%  17/23 in RAM
+
+rtx4060ti-16gb-ram32, short sessions: 16 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q5_K_M  f16   66.1k    30 tok/s  100%  20/40 in RAM
+  2  glm-4.7-flash                  Q4_K_M  f16   64.8k    26 tok/s  100%  19/46 in RAM
+  3  qwen3-coder-30b-a3b            Q3_K_M  f16     65k    29 tok/s  100%  20/48 in RAM
+
+rtx4060ti-16gb-ram32, long sessions: 16 GiB vram, trade-offs
+  1  qwen3.6-35b-a3b                Q4_K_M  f16    256k    23 tok/s   90%  24/40 in RAM
+  2  nemotron-3.5-lightning-30b-a3b Q5_K_M  f16    256k    30 tok/s   90%  10/23 in RAM
+  3  gemma-4-26b-a4b                Q3_K_M  f16    255k    30 tok/s   90%  7/30 in RAM
+
+rtx5080-16gb-ram32, short sessions: 15.9 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q6_K    f16   85.3k    36 tok/s  100%  24/40 in RAM
+  2  glm-4.7-flash                  Q5_K_M  f16   64.7k    29 tok/s  100%  24/46 in RAM
+  3  qwen3-coder-30b-a3b            Q4_K_M  f16   64.5k    31 tok/s  100%  26/48 in RAM
+
+rtx5080-16gb-ram32, long sessions: 15.9 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q5_K_M  f16    256k    32 tok/s   90%  28/40 in RAM
+  2  nemotron-3.5-lightning-30b-a3b Q6_K    f16    256k    33 tok/s   90%  12/23 in RAM
+  3  gemma-4-26b-a4b                Q5_K_M  f16    256k    30 tok/s   90%  16/30 in RAM
+
+rtx3090-24gb-ram32, short sessions: 24 GiB vram, ready
+  1  glm-4.7-flash                  Q6_K    f16   63.3k    42 tok/s  100%  10/46 in RAM
+  2  qwen3-coder-30b-a3b            Q6_K    f16   65.1k    34 tok/s  100%  15/48 in RAM
+  3  qwen3.6-35b-a3b                Q8_0    f16    103k    32 tok/s  100%  19/40 in RAM
+
+rtx3090-24gb-ram32, long sessions: 24 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q6_K    f16    256k    36 tok/s   90%  17/40 in RAM
+  2  qwen3-coder-next               Q3_K_M  f16    254k    36 tok/s   90%  27/48 in RAM
+  3  gemma-4-26b-a4b                Q6_K    f16    256k    46 tok/s   90%  5/30 in RAM
+
+rtx4090-24gb-ram16, short sessions: 24 GiB vram, ready
+  1  glm-4.7-flash                  Q6_K    f16   63.1k    45 tok/s  100%  10/46 in RAM
+  2  qwen3-coder-30b-a3b            Q6_K    f16     65k    36 tok/s  100%  15/48 in RAM
+  3  qwen3.6-35b-a3b                Q6_K    f16     89k    60 tok/s  100%  11/40 in RAM
+
+rtx4090-24gb-ram16, long sessions: 24 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q6_K    f16    256k    39 tok/s   90%  17/40 in RAM
+  2  glm-4.7-flash                  Q4_K_M  f16    198k    30 tok/s   70%  16/46 in RAM
+  3  gemma-4-26b-a4b                Q6_K    f16    256k    51 tok/s   90%  5/30 in RAM
+
+rtx4090-24gb-ram64, short sessions: 24 GiB vram, ready
+  1  glm-4.7-flash                  Q6_K    f16   63.1k    45 tok/s  100%  10/46 in RAM
+  2  qwen3-coder-30b-a3b            Q6_K    f16     65k    36 tok/s  100%  15/48 in RAM
+  3  qwen3.6-35b-a3b                Q8_0    f16    102k    33 tok/s  100%  19/40 in RAM
+
+rtx4090-24gb-ram64, long sessions: 24 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q6_K    f16    256k    39 tok/s   90%  17/40 in RAM
+  2  qwen3-coder-next               Q4_K_M  f16    256k    29 tok/s   90%  32/48 in RAM
+  3  glm-4.7-flash                  Q4_K_M  f16    198k    30 tok/s   70%  16/46 in RAM
+
+rtx5090-32gb-ram64, short sessions: 31.8 GiB vram, ready
+  1  devstral-small-2-24b           Q6_K    f16   76.8k    45 tok/s  100%
+  2  devstral-small-2507            Q6_K    f16     79k    45 tok/s  100%
+  3  glm-4.7-flash                  Q8_0    f16   70.3k    52 tok/s  100%  7/46 in RAM
+
+rtx5090-32gb-ram64, long sessions: 31.8 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q8_0    f16    256k    44 tok/s   90%  13/40 in RAM
+  2  qwen3-coder-next               Q5_K_M  f16    256k    32 tok/s   90%  27/48 in RAM
+  3  qwen3.6-27b                    Q3_K_M  f16    256k    44 tok/s   90%
+
+2x-rtx3090-48gb-ram64, short sessions: 48 GiB vram, ready
+  1  glm-4.7-flash                  Q8_0    f16    198k    70 tok/s  100%
+  2  qwen3-coder-30b-a3b            Q8_0    f16    174k    80 tok/s  100%
+  3  qwen3-coder-next               Q6_K    f16   67.1k    47 tok/s  100%  13/48 in RAM
+
+2x-rtx3090-48gb-ram64, long sessions: 48 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q8_0    f16    256k    61 tok/s   90%
+  2  qwen3-coder-next               Q6_K    f16    256k    32 tok/s   90%  17/48 in RAM
+  3  qwen3-coder-30b-a3b            Q5_K_M  f16    256k    30 tok/s   90%
+
+rx7900xtx-24gb-ram32, short sessions: 24 GiB vram, ready
+  1  glm-4.7-flash                  Q6_K    f16     63k    41 tok/s  100%  10/46 in RAM
+  2  qwen3.6-35b-a3b                Q6_K    f16   88.8k    54 tok/s  100%  11/40 in RAM
+  3  qwen3-coder-30b-a3b            Q5_K_M  f16   62.5k    50 tok/s  100%  9/48 in RAM
+
+rx7900xtx-24gb-ram32, long sessions: 24 GiB vram, ready
+  1  qwen3.6-35b-a3b                Q5_K_M  f16    256k    46 tok/s   90%  12/40 in RAM
+  2  qwen3-coder-next               Q3_K_M  f16    256k    35 tok/s   90%  28/48 in RAM
+  3  gemma-4-26b-a4b                Q6_K    f16    256k    45 tok/s   90%  5/30 in RAM
+
+cpu-16gb, short sessions: 10.7 GiB cpu, trade-offs
+  1  gemma-4-e2b                    Q4_K_M  f16    128k    15 tok/s  100%
+  2  qwen3.5-2b                     Q4_K_M  f16    256k    17 tok/s  100%
+  3  gemma-4-e4b                    Q5_K_M  f16    128k     7 tok/s  100%
+
+cpu-16gb, long sessions: 10.7 GiB cpu, not-yet
+  1  qwen3.5-2b                     Q6_K    f16    256k     8 tok/s   90%
+  2  qwen3.5-4b                     Q4_K_M  f16    208k     4 tok/s   75%
+  3  qwen3.5-9b                     Q2_K    f16    184k     3 tok/s   60%
+
+cpu-64gb-igpu, short sessions: 48 GiB cpu, trade-offs
+  1  nemotron-3.5-lightning-30b-a3b Q4_K_M  f16    256k    10 tok/s  100%
+  2  nemotron-3-nano-30b-a3b        Q4_K_M  f16    256k    10 tok/s  100%
+  3  gemma-4-e2b                    Q4_K_M  f16    128k    15 tok/s  100%
+
+cpu-64gb-igpu, long sessions: 48 GiB cpu, not-yet
+  1  qwen3.6-35b-a3b                Q6_K    f16    256k     4 tok/s   90%
+  2  qwen3.6-27b                    Q6_K    f16    256k     1 tok/s   90%
+  3  qwen3.8-27b                    Q6_K    f16    256k     1 tok/s   90%

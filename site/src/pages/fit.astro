@@ -1,0 +1,334 @@
+---
+import Base from '../layouts/Base.astro';
+import { catalogueDate } from '../data/models';
+
+const title = 'Which local models run on your GPU or Mac · lo0';
+const description =
+  'Pick a graphics card or an Apple chip and see which open coding models fit, how much context they keep and how fast they write, worked out in your browser by lo0 itself.';
+const fallback = 'lo0 match --gpu "RTX 4090" --ram 64';
+---
+<Base title={title} description={description}>
+  <header class="wrap hero">
+    <p class="eyebrow">Will it run?</p>
+    <h1>Which models fit your hardware</h1>
+    <p class="lede">
+      Pick a card or a Mac. lo0’s own matching runs in this page, against the catalogue of {catalogueDate},
+      and nothing you choose leaves your browser. Run the command it gives you to add your own sessions.
+    </p>
+  </header>
+
+  <section class="wrap fit" data-fit>
+    <form class="picker" data-form aria-label="Hardware">
+      <fieldset class="kind">
+        <legend class="visually-hidden">Kind of machine</legend>
+        <label><input type="radio" name="kind" value="gpu" checked /> Graphics card</label>
+        <label><input type="radio" name="kind" value="mac" /> Mac</label>
+      </fieldset>
+
+      <div class="fields" data-for="gpu">
+        <label class="field wide">Card <select name="gpu" disabled></select></label>
+        <label class="field" data-vram>VRAM <select name="vram"></select></label>
+        <label class="field">Cards
+          <select name="gpus">{[1, 2, 3, 4].map((n) => <option value={n}>{n}</option>)}</select>
+        </label>
+        <label class="field">System memory
+          <select name="ram">{[16, 32, 64, 96, 128, 192, 256].map((n) => <option value={n} selected={n === 64}>{n} GB</option>)}</select>
+        </label>
+      </div>
+
+      <div class="fields" data-for="mac" hidden>
+        <label class="field wide">Chip <select name="mac" disabled></select></label>
+        <label class="field" data-cores>GPU cores <select name="cores"></select></label>
+        <label class="field">Memory
+          <select name="memory">{[8, 16, 18, 24, 32, 36, 48, 64, 96, 128, 192, 256, 512].map((n) => <option value={n} selected={n === 64}>{n} GB</option>)}</select>
+        </label>
+      </div>
+    </form>
+
+    <div class="answer" aria-live="polite">
+      <p class="status" data-status>Loading lo0, about 3 MB.</p>
+      <noscript>
+        <p class="status">This page runs lo0 in your browser and needs JavaScript. The same answer comes from <code>{fallback}</code>.</p>
+      </noscript>
+      <ul class="reasons" role="list" data-reasons hidden></ul>
+      <pre class="term" data-models hidden></pre>
+      <div class="cmd" data-cmd hidden>
+        <span class="label">With your history</span>
+        <code><span class="ps1" aria-hidden="true">$</span> <span data-cmd-text></span></code>
+        <button type="button" data-copy-cmd aria-label="Copy the command">Copy</button>
+      </div>
+      <p class="note" data-cmd-note hidden>
+        <a href="/install">Install lo0</a>, then run this to see how much of your Claude Code and Codex work these models can take.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="/wasm/wasm_exec.js"></script>
+
+<script>
+  interface KnownGPU { name: string; vram: number[] }
+  interface KnownMac { chip: string; cores?: number[] }
+  interface Known { gpus: KnownGPU[]; macs: KnownMac[] }
+  interface Answer { reasons?: string[]; models?: string; command?: string; error?: string }
+  interface GoRuntime { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> }
+  interface Lo0 { known(): string; assess(request: string): string }
+
+  const g = globalThis as unknown as { Go?: new () => GoRuntime; lo0?: Lo0 };
+  const root = document.querySelector<HTMLElement>('[data-fit]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const status = root.querySelector<HTMLElement>('[data-status]')!;
+  const reasons = root.querySelector<HTMLElement>('[data-reasons]')!;
+  const models = root.querySelector<HTMLElement>('[data-models]')!;
+  const cmd = root.querySelector<HTMLElement>('[data-cmd]')!;
+  const cmdText = root.querySelector<HTMLElement>('[data-cmd-text]')!;
+  const cmdNote = root.querySelector<HTMLElement>('[data-cmd-note]')!;
+  const field = (name: string) => form.elements.namedItem(name) as HTMLSelectElement;
+
+  const options = (select: HTMLSelectElement, values: (string | number)[], label = (v: string | number) => String(v), keep: (string | null)[] = []) => {
+    select.replaceChildren(...values.map((v) => new Option(label(v), String(v))));
+    const want = keep.find((k) => k !== null && values.map(String).includes(k));
+    if (want) select.value = want;
+  };
+
+  async function load(): Promise<Lo0> {
+    if (!g.Go) throw new Error('missing runtime');
+    const go = new g.Go();
+    const ready = new Promise<void>((resolve) => addEventListener('lo0ready', () => resolve(), { once: true }));
+    const { instance } = await WebAssembly.instantiateStreaming(fetch('/wasm/lo0.wasm'), go.importObject);
+    void go.run(instance);
+    await ready;
+    return g.lo0!;
+  }
+
+  function start(lo0: Lo0) {
+    const known: Known = JSON.parse(lo0.known());
+    const kind = () => (form.elements.namedItem('kind') as RadioNodeList).value as 'gpu' | 'mac';
+    const params = new URLSearchParams(location.search);
+
+    options(field('gpu'), known.gpus.map((c) => c.name), undefined, [params.get('gpu'), 'RTX 4090']);
+    options(field('mac'), known.macs.map((m) => m.chip), undefined, [params.get('mac'), 'M4 Max']);
+    if (params.has('mac')) (form.querySelector('input[value="mac"]') as HTMLInputElement).checked = true;
+    for (const name of ['gpus', 'ram', 'memory']) {
+      const v = params.get(name);
+      if (v && [...field(name).options].some((o) => o.value === v)) field(name).value = v;
+    }
+    field('gpu').disabled = field('mac').disabled = false;
+
+    const sizes = () => {
+      const card = known.gpus.find((c) => c.name === field('gpu').value)!;
+      options(field('vram'), card.vram, (v) => `${v} GB`, [params.get('vram'), field('vram').value]);
+      root.querySelector<HTMLElement>('[data-vram]')!.hidden = card.vram.length < 2;
+      const chip = known.macs.find((m) => m.chip === field('mac').value)!;
+      const cores = (chip.cores ?? []).map(String);
+      const want = params.get('cores') ?? field('cores').value;
+      options(field('cores'), cores, (v) => `${v}-core`);
+      if (cores.length) field('cores').value = cores.includes(want) ? want : cores.at(-1)!;
+      params.delete('cores');
+      params.delete('vram');
+      root.querySelector<HTMLElement>('[data-cores]')!.hidden = cores.length < 2;
+    };
+
+    // A chip named without a core count is the full chip, as on the command line.
+    const request = () => {
+      if (kind() === 'mac') {
+        const select = field('cores');
+        const full = select.selectedIndex === select.options.length - 1;
+        const cores = full ? '' : ` ${select.value}-core`;
+        return { mac: field('mac').value + cores, memory: Number(field('memory').value) };
+      }
+      return {
+        gpu: field('gpu').value,
+        vram: Number(field('vram').value),
+        gpus: Number(field('gpus').value),
+        ram: Number(field('ram').value),
+      };
+    };
+
+    const columns = () => {
+      const probe = document.createElement('span');
+      probe.textContent = '0'.repeat(10);
+      models.hidden = false;
+      models.append(probe);
+      const width = Math.floor((models.clientWidth - 2 * parseFloat(getComputedStyle(models).paddingInline)) / (probe.offsetWidth / 10));
+      probe.remove();
+      return Math.min(width, 96);
+    };
+
+    const run = () => {
+      for (const el of form.querySelectorAll<HTMLElement>('[data-for]')) el.hidden = el.dataset.for !== kind();
+      sizes();
+      const req = request();
+      const a: Answer = JSON.parse(lo0.assess(JSON.stringify({ ...req, width: columns() })));
+      const url = new URL(location.href);
+      url.search = new URLSearchParams(Object.entries({ ...req, ...(kind() === 'mac' ? { mac: field('mac').value, cores: field('cores').value } : {}) }).map(([k, v]) => [k, String(v)])).toString();
+      history.replaceState(null, '', url);
+      status.hidden = !a.error;
+      status.textContent = a.error ?? '';
+      reasons.hidden = models.hidden = cmd.hidden = cmdNote.hidden = !!a.error;
+      if (a.error) return;
+      reasons.replaceChildren(...(a.reasons ?? []).map((r) => Object.assign(document.createElement('li'), { textContent: r })));
+      models.textContent = a.models ?? '';
+      cmdText.textContent = a.command ?? '';
+    };
+
+    form.addEventListener('change', run);
+    addEventListener('resize', () => { if (!models.hidden) run(); });
+    root.querySelector('[data-copy-cmd]')!.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      try {
+        await navigator.clipboard.writeText(cmdText.textContent ?? '');
+        btn.textContent = 'Copied';
+      } catch {
+        btn.textContent = 'Select and copy';
+      }
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+    });
+    run();
+  }
+
+  load().then(start, () => {
+    status.textContent = 'lo0 could not load in this browser. Install it and run lo0 match --gpu or --mac to get the same answer.';
+  });
+</script>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 2rem + 5vw, 6rem) clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    display: grid;
+    gap: 1rem;
+    max-width: 52rem;
+    margin-inline: max(var(--gutter), (100% - var(--page)) / 2);
+
+    & h1 { font-size: var(--step-4); line-height: 1.05; letter-spacing: -0.02em; }
+    & .lede { color: var(--ink-2); font-size: var(--step-1); max-width: var(--measure); line-height: 1.5; }
+  }
+
+  .fit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    padding-bottom: var(--section);
+  }
+
+  .picker {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .kind {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.25rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+
+    & label {
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--ink-2);
+      transition: background-color 160ms, color 160ms;
+    }
+    & label:has(:checked) { background: var(--accent-soft); color: var(--ink); }
+    & label:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: 1px; }
+    & input { position: absolute; opacity: 0; pointer-events: none; }
+  }
+
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+
+    &[hidden] { display: none; }
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+
+    &[hidden] { display: none; }
+    &.wide { flex: 1 1 14rem; max-width: 24rem; }
+    &.wide select { width: 100%; }
+  }
+
+  select {
+    min-height: 2.5rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: var(--step-0);
+
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  }
+
+  .answer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .status { color: var(--ink-2); }
+
+  .reasons {
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--step-1);
+    max-width: var(--measure);
+    line-height: 1.45;
+  }
+
+  .term {
+    margin: 0;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--term-edge);
+    border-radius: var(--radius);
+    background: var(--term-bg);
+    color: var(--term-ink);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    overflow-x: auto;
+    animation: enter 280ms var(--ease-out);
+  }
+
+  .cmd {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    max-width: 100%;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+
+    &[hidden] { display: none; }
+    & .label { flex: none; font-size: var(--step--1); color: var(--ink-3); padding-right: 0.9rem; border-right: 1px solid var(--rule); }
+    & code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; font-size: 0.875rem; }
+    & .ps1 { color: var(--accent); user-select: none; }
+    & button {
+      flex: none;
+      padding: 0.45rem 0.8rem;
+      border-radius: var(--radius-sm);
+      color: var(--ink-2);
+      font-size: var(--step--1);
+      transition: background-color 160ms, color 160ms;
+    }
+    & button:hover { background: var(--bg-sunk); color: var(--ink); }
+  }
+
+  .note { color: var(--ink-2); font-size: var(--step--1); }
+
+  @keyframes enter {
+    from { opacity: 0; translate: 0 4px; }
+  }
+
+  @media (width < 30rem) {
+    .cmd .label { display: none; }
+  }
+</style>

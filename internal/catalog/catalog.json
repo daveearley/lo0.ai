@@ -1,0 +1,3087 @@
+{
+  "generated": "2026-11-06",
+  "models": [
+    {
+      "id": "deepseek-v3.2",
+      "name": "DeepSeek-V3.2",
+      "family": "deepseek",
+      "repo": "deepseek-ai/DeepSeek-V3.2",
+      "license": "mit",
+      "released": "2025-12-01",
+      "gguf": "unsloth/DeepSeek-V3.2-GGUF",
+      "params": 685355329792,
+      "activeParams": 51881208064,
+      "statedActiveParams": 37000000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 61,
+        "fullKV": 576
+      },
+      "experts": {
+        "params": 653908770816,
+        "count": 256,
+        "perToken": 8,
+        "layers": "---EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 728190037904,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 561991370429,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 487458978315,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 415496668686,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 334967417436,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 257008248672,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Efficient reasoning and agent model with sparse attention and thinking-with-tools.",
+        "goodAt": [
+          "SWE Verified 73.1 (tech report)",
+          "Thinking integrated into tool calls",
+          "Sparse attention for cheaper long context",
+          "MIT licence"
+        ],
+        "watchOut": [
+          "Huge: 671B parameters",
+          "No standard chat template; runtime support varies",
+          "Report: use non-thinking in Roo Code/Terminus"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "73.1"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "46.4"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "70.2"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "score": "80.3"
+          }
+        ],
+        "card": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
+      }
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "name": "DeepSeek-V4-Flash",
+      "family": "deepseek",
+      "repo": "deepseek-ai/DeepSeek-V4-Flash",
+      "license": "mit",
+      "released": "2026-04-22",
+      "gguf": "unsloth/DeepSeek-V4-Flash-GGUF",
+      "params": 290944616402,
+      "activeParams": 13000000000,
+      "contextLength": 1048576,
+      "attention": {
+        "fullLayers": 43,
+        "fullKV": 1024,
+        "approximate": true
+      },
+      "experts": {
+        "params": 277025390592,
+        "count": 256,
+        "perToken": 6,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q3_K_M",
+          "bytes": 142199181266,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 109104231151,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Preview MoE model for efficient million-token-context reasoning and agentic work.",
+        "goodAt": [
+          "284B MoE with only 13B active",
+          "1M-token context with efficient hybrid attention",
+          "SWE Verified 79.0 in Think Max mode",
+          "Three modes: non-think, high, max"
+        ],
+        "watchOut": [
+          "Preview release",
+          "No standard chat template; runtime support varies",
+          "Think Max needs \u003e=384K context window"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "setting": "Max",
+            "score": "79.0"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "setting": "Max",
+            "score": "56.9"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "setting": "Max",
+            "score": "52.6"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "setting": "Max",
+            "score": "73.3"
+          },
+          {
+            "name": "Toolathlon (Max)",
+            "score": "47.8"
+          }
+        ],
+        "card": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"
+      }
+    },
+    {
+      "id": "devstral-small-2-24b",
+      "name": "Devstral-Small-2-24B",
+      "family": "devstral",
+      "repo": "mistralai/Devstral-Small-2-24B-Instruct-2512",
+      "license": "apache-2.0",
+      "released": "2025-12-09",
+      "ollama": [
+        "devstral-small-2:24b",
+        "devstral-small-2"
+      ],
+      "gguf": "unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF",
+      "params": 24011361280,
+      "activeParams": 24011361280,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 40,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 25512071360,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 19689316250,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 17078080710,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 14556887776,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 11735552826,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 9004260480,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Agentic software-engineering model for exploring codebases and multi-file edits.",
+        "goodAt": [
+          "SWE-bench Verified 68.0% at 24B",
+          "256K context window",
+          "Apache 2.0; tool calling via mistral parser"
+        ],
+        "watchOut": [
+          "Terminal Bench 2 only 22.5%",
+          "Lab warns local serving can underperform its scores"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "68.0"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "55.7"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "22.5"
+          }
+        ],
+        "card": "https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512"
+      }
+    },
+    {
+      "id": "devstral-small-2507",
+      "name": "Devstral-Small-2507",
+      "family": "devstral",
+      "repo": "mistralai/Devstral-Small-2507",
+      "license": "apache-2.0",
+      "released": "2025-07-04",
+      "gguf": "unsloth/Devstral-Small-2507-GGUF",
+      "params": 23572403200,
+      "activeParams": 23572403200,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 40,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 25045678400,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 19329370624,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 16765871776,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 14290769440,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 11521012064,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 8839651200,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Agentic coding LLM (Devstral Small 1.1) built with All Hands AI for coding agents.",
+        "goodAt": [
+          "SWE-bench Verified 53.6%",
+          "Mistral function calling; OpenHands recommended",
+          "Apache 2.0 licence"
+        ],
+        "watchOut": [
+          "Text-only (vision encoder removed)",
+          "128K context, less than newer models",
+          "Needs Mistral tokenizer and tool parser support"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "53.6"
+          }
+        ],
+        "card": "https://huggingface.co/mistralai/Devstral-Small-2507"
+      }
+    },
+    {
+      "id": "gemma-4-26b-a4b",
+      "name": "Gemma-4-26B-A4B",
+      "family": "gemma",
+      "repo": "google/gemma-4-26B-A4B-it",
+      "license": "apache-2.0",
+      "released": "2026-03-11",
+      "ollama": [
+        "gemma4:26b"
+      ],
+      "gguf": "unsloth/gemma-4-26B-A4B-it-GGUF",
+      "params": 25805936206,
+      "activeParams": 4395325006,
+      "statedActiveParams": 3800000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 5,
+        "fullKV": 2048,
+        "slidingLayers": 25,
+        "slidingKV": 4096,
+        "window": 1024
+      },
+      "experts": {
+        "params": 22837985280,
+        "count": 128,
+        "perToken": 8,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 27418807219,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 21160867689,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 18354472127,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 15644848825,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 12612651321,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 9677226077,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "Multimodal MoE Gemma model for reasoning, coding and agentic workflows on workstations.",
+        "goodAt": [
+          "25.2B MoE, 3.8B active: near-4B speed",
+          "Native function calling",
+          "256K context window",
+          "LiveCodeBench v6 77.1%; Apache 2.0"
+        ],
+        "watchOut": [
+          "No published agentic coding scores",
+          "Long-context recall: MRCR 128k only 44.1%",
+          "Thinking via \u003c|think|\u003e token in system prompt"
+        ],
+        "benchmarks": [
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "77.1"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "setting": "average of 3",
+            "score": "68.2"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "score": "1718"
+          }
+        ],
+        "card": "https://huggingface.co/google/gemma-4-26B-A4B-it"
+      }
+    },
+    {
+      "id": "gemma-4-31b",
+      "name": "Gemma-4-31B",
+      "family": "gemma",
+      "repo": "google/gemma-4-31B-it",
+      "license": "apache-2.0",
+      "released": "2026-03-11",
+      "ollama": [
+        "gemma4:31b"
+      ],
+      "gguf": "unsloth/gemma-4-31B-it-GGUF",
+      "params": 31273088876,
+      "activeParams": 31273088876,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 10,
+        "fullKV": 4096,
+        "slidingLayers": 50,
+        "slidingKV": 8192,
+        "window": 1024
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 33227656931,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 25643932878,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 22242984463,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 18959310131,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 15284722188,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 11727408329,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "Dense multimodal Gemma model for reasoning, coding and agentic workflows.",
+        "goodAt": [
+          "LiveCodeBench v6 80.0%, Codeforces 2150",
+          "Native function calling",
+          "Tau2 76.9% for tool-using agents",
+          "256K context; Apache 2.0"
+        ],
+        "watchOut": [
+          "Dense 30.7B: slower than MoE models of similar size",
+          "No published agentic coding scores",
+          "Strip past thoughts from history (except tools)"
+        ],
+        "benchmarks": [
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "80.0"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "setting": "average of 3",
+            "score": "76.9"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "score": "2150"
+          }
+        ],
+        "card": "https://huggingface.co/google/gemma-4-31B-it"
+      }
+    },
+    {
+      "id": "gemma-4-e2b",
+      "name": "Gemma-4-E2B",
+      "family": "gemma",
+      "repo": "google/gemma-4-E2B-it",
+      "license": "apache-2.0",
+      "released": "2026-03-02",
+      "ollama": [
+        "gemma4:e2b"
+      ],
+      "gguf": "unsloth/gemma-4-E2B-it-GGUF",
+      "params": 5123178051,
+      "activeParams": 2300000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 3,
+        "fullKV": 1024,
+        "slidingLayers": 12,
+        "slidingKV": 512,
+        "window": 512
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 5443376679,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 4201006002,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 3643860389,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 3105926693,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 2503953272,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 1921191769,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Smallest Gemma 4, built for phones and edge devices, with native function calling.",
+        "goodAt": [
+          "Native function calling",
+          "2.3B effective params, 5.1B with embeddings",
+          "128K context; Apache 2.0"
+        ],
+        "watchOut": [
+          "No published agentic coding scores",
+          "Tau2 only 24.5%",
+          "Long-context recall: MRCR 128k only 19.1%"
+        ],
+        "benchmarks": [
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "44.0"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "setting": "average of 3",
+            "score": "24.5"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "score": "633"
+          }
+        ],
+        "card": "https://huggingface.co/google/gemma-4-E2B-it"
+      }
+    },
+    {
+      "id": "gemma-4-e4b",
+      "name": "Gemma-4-E4B",
+      "family": "gemma",
+      "repo": "google/gemma-4-E4B-it",
+      "license": "apache-2.0",
+      "released": "2026-03-02",
+      "ollama": [
+        "gemma4:e4b"
+      ],
+      "gguf": "unsloth/gemma-4-E4B-it-GGUF",
+      "params": 7996156490,
+      "activeParams": 4500000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 4,
+        "fullKV": 2048,
+        "slidingLayers": 20,
+        "slidingKV": 1024,
+        "window": 512
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 8495916271,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 6556848322,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 5687266304,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 4847669872,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 3908121484,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 2998558684,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "On-device multimodal Gemma with native function calling and audio input.",
+        "goodAt": [
+          "Native function calling",
+          "4.5B effective params, 8B with embeddings",
+          "Built for local use on laptops and phones",
+          "128K context; Apache 2.0"
+        ],
+        "watchOut": [
+          "No published agentic coding scores",
+          "Tau2 42.2%, against 68.2% for 26B A4B",
+          "Long-context recall: MRCR 128k only 25.4%"
+        ],
+        "benchmarks": [
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "52.0"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "setting": "average of 3",
+            "score": "42.2"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "score": "940"
+          }
+        ],
+        "card": "https://huggingface.co/google/gemma-4-E4B-it"
+      }
+    },
+    {
+      "id": "glm-4.5-air",
+      "name": "GLM-4.5-Air",
+      "family": "glm",
+      "repo": "zai-org/GLM-4.5-Air",
+      "license": "mit",
+      "released": "2025-07-20",
+      "gguf": "unsloth/GLM-4.5-Air-GGUF",
+      "params": 110468824832,
+      "activeParams": 17040703232,
+      "statedActiveParams": 12000000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 46,
+        "fullKV": 2048
+      },
+      "experts": {
+        "params": 99656663040,
+        "count": 128,
+        "perToken": 8,
+        "layers": "-EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 117373126384,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 90584436362,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 78570951662,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 66971725054,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 53991638137,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 41425809312,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Compact GLM-4.5 foundation model for agents, unifying reasoning, coding and tool use.",
+        "goodAt": [
+          "106B MoE with 12B active",
+          "Hybrid: thinking for tools, non-thinking for speed",
+          "SWE-bench Verified 57.6 (tech report)",
+          "MIT licence, commercial use allowed"
+        ],
+        "watchOut": [
+          "106B total weights need lots of memory"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "57.6"
+          },
+          {
+            "name": "Terminal-Bench",
+            "score": "30.0"
+          },
+          {
+            "key": "bfcl-v3",
+            "name": "BFCL v3",
+            "score": "76.4"
+          },
+          {
+            "key": "tau-bench-retail",
+            "name": "τ-bench Retail",
+            "score": "77.9"
+          }
+        ],
+        "card": "https://huggingface.co/zai-org/GLM-4.5-Air"
+      }
+    },
+    {
+      "id": "glm-4.7-flash",
+      "name": "GLM-4.7-Flash",
+      "family": "glm",
+      "repo": "zai-org/GLM-4.7-Flash",
+      "license": "mit",
+      "released": "2026-01-19",
+      "ollama": [
+        "glm-4.7-flash"
+      ],
+      "gguf": "unsloth/GLM-4.7-Flash-GGUF",
+      "params": 31221488576,
+      "activeParams": 5174860736,
+      "statedActiveParams": 3000000000,
+      "contextLength": 202752,
+      "attention": {
+        "fullLayers": 47,
+        "fullKV": 576
+      },
+      "experts": {
+        "params": 27783069696,
+        "count": 64,
+        "perToken": 4,
+        "layers": "-EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 33172831612,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 25601620632,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 22206283750,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 18928027449,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 15259502542,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 11708058216,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Lightweight 30B-A3B MoE model balancing performance and efficiency for local deployment.",
+        "goodAt": [
+          "SWE-bench Verified 59.2 with ~3B active",
+          "τ²-Bench 79.5 for multi-turn tool use",
+          "BrowseComp 42.8",
+          "MIT licence"
+        ],
+        "watchOut": [
+          "Needs GLM tool and reasoning parser support",
+          "Enable Preserved Thinking for agentic tasks"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "59.2"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "score": "79.5"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "64.0"
+          },
+          {
+            "name": "BrowseComp",
+            "score": "42.8"
+          }
+        ],
+        "card": "https://huggingface.co/zai-org/GLM-4.7-Flash"
+      }
+    },
+    {
+      "id": "glm-5.3",
+      "name": "GLM-5.3",
+      "family": "glm",
+      "repo": "zai-org/GLM-5.3",
+      "license": "other",
+      "released": "2026-08-25",
+      "gguf": "unsloth/GLM-5.3-GGUF",
+      "params": 753329940480,
+      "activeParams": 51203450880,
+      "contextLength": 1048576,
+      "attention": {
+        "fullLayers": 78,
+        "fullKV": 576
+      },
+      "experts": {
+        "params": 724775731200,
+        "count": 256,
+        "perToken": 8,
+        "layers": "---EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 800413061760,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 617730551194,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 282498727680,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Z.ai's frontier coding model, post-trained for complex coding and long-horizon tasks.",
+        "goodAt": [
+          "Terminal Bench 2.1 88.2 in Claude Code",
+          "DeepSWE 66.9, SWE-Marathon 42.5",
+          "Toolathlon Verified 73.0",
+          "reasoning_effort low/high/max"
+        ],
+        "watchOut": [
+          "Custom GLM-5.3 licence, not MIT/Apache",
+          "reasoning_effort defaults to max: token-heavy"
+        ],
+        "benchmarks": [
+          {
+            "key": "terminal-bench-2.1",
+            "name": "Terminal-Bench 2.1",
+            "score": "88.2"
+          },
+          {
+            "key": "terminal-bench-3.0",
+            "name": "Terminal-Bench 3.0",
+            "score": "28.3"
+          },
+          {
+            "key": "deep-swe-1.1",
+            "name": "DeepSWE 1.1",
+            "score": "66.9"
+          },
+          {
+            "name": "SWE-Marathon (v1.1)",
+            "score": "42.5"
+          }
+        ],
+        "card": "https://huggingface.co/zai-org/GLM-5.3"
+      }
+    },
+    {
+      "id": "gpt-oss-120b",
+      "name": "gpt-oss-120b",
+      "family": "gpt-oss",
+      "repo": "openai/gpt-oss-120b",
+      "license": "apache-2.0",
+      "released": "2025-08-04",
+      "ollama": [
+        "gpt-oss:120b"
+      ],
+      "gguf": "ggml-org/gpt-oss-120b-GGUF",
+      "params": 116829156672,
+      "activeParams": 5750551872,
+      "statedActiveParams": 5130000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 18,
+        "fullKV": 1024,
+        "slidingLayers": 18,
+        "slidingKV": 1024,
+        "window": 128
+      },
+      "experts": {
+        "params": 114661785600,
+        "count": 128,
+        "perToken": 4,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "MXFP4",
+          "bytes": 65290000000,
+          "bitsPerWeight": 4.47,
+          "expertBitsPerWeight": 4.25
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "OpenAI open-weight reasoning model for production, high-reasoning and agentic use.",
+        "goodAt": [
+          "Native function calling and structured outputs",
+          "SWE-bench Verified 62.4 at high reasoning",
+          "Adjustable reasoning effort: low/medium/high"
+        ],
+        "watchOut": [
+          "Needs the harmony chat format; runtimes must support it",
+          "No reasoning-off mode documented"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "setting": "high",
+            "score": "62.4"
+          },
+          {
+            "key": "tau-bench-retail",
+            "name": "τ-bench Retail",
+            "setting": "high",
+            "score": "67.8"
+          },
+          {
+            "key": "aider-polyglot",
+            "name": "Aider Polyglot",
+            "setting": "high",
+            "score": "44.4"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "setting": "with tools, high",
+            "score": "2622"
+          }
+        ],
+        "card": "https://huggingface.co/openai/gpt-oss-120b"
+      }
+    },
+    {
+      "id": "gpt-oss-20b",
+      "name": "gpt-oss-20b",
+      "family": "gpt-oss",
+      "repo": "openai/gpt-oss-20b",
+      "license": "apache-2.0",
+      "released": "2025-08-04",
+      "ollama": [
+        "gpt-oss:20b",
+        "gpt-oss"
+      ],
+      "gguf": "ggml-org/gpt-oss-20b-GGUF",
+      "params": 20914757184,
+      "activeParams": 4193246784,
+      "statedActiveParams": 3610000000,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 12,
+        "fullKV": 1024,
+        "slidingLayers": 12,
+        "slidingKV": 1024,
+        "window": 128
+      },
+      "experts": {
+        "params": 19110297600,
+        "count": 32,
+        "perToken": 4,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "MXFP4",
+          "bytes": 13780000000,
+          "bitsPerWeight": 5.27,
+          "expertBitsPerWeight": 4.25
+        }
+      ],
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "OpenAI open-weight reasoning model for low-latency, local and agentic use.",
+        "goodAt": [
+          "21B MoE, 3.6B active; runs within 16GB",
+          "Native function calling and structured outputs",
+          "SWE-bench Verified 60.7 at high reasoning",
+          "Adjustable reasoning effort: low/medium/high"
+        ],
+        "watchOut": [
+          "Needs the harmony chat format; runtimes must support it",
+          "No reasoning-off mode documented",
+          "Aider Polyglot only 34.2 even at high"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "setting": "high",
+            "score": "60.7"
+          },
+          {
+            "key": "tau-bench-retail",
+            "name": "τ-bench Retail",
+            "setting": "high",
+            "score": "54.8"
+          },
+          {
+            "key": "aider-polyglot",
+            "name": "Aider Polyglot",
+            "setting": "high",
+            "score": "34.2"
+          },
+          {
+            "key": "codeforces-elo",
+            "name": "Codeforces Elo",
+            "setting": "with tools, high",
+            "score": "2516"
+          }
+        ],
+        "card": "https://huggingface.co/openai/gpt-oss-20b"
+      }
+    },
+    {
+      "id": "granite-4.2-30b",
+      "name": "Granite-4.2-30B",
+      "family": "granite",
+      "repo": "ibm-granite/granite-4.2-30b",
+      "license": "apache-2.0",
+      "released": "2026-08-25",
+      "ollama": [
+        "granite4.2:30b"
+      ],
+      "gguf": "ibm-granite/granite-4.2-30b-GGUF",
+      "params": 29276770304,
+      "activeParams": 29276770304,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 64,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 31106568448,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 24006951649,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 20823102879,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 17749041997,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 14309021486,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 10978788864,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "Dense reasoning model for code, tool calling and agentic workflows, enterprise-focused.",
+        "goodAt": [
+          "SWE-bench Verified 57",
+          "BFCL v4 61.39; reasoning-augmented tool calls",
+          "Documented OpenCode, Pi, OpenHands setups",
+          "Apache 2.0; 128K native, 512K extended"
+        ],
+        "watchOut": [
+          "Custom vLLM parser advised for reasoning output",
+          "Terminal-Bench 2.1 only 29.24"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "57"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "33.29"
+          },
+          {
+            "key": "terminal-bench-2.1",
+            "name": "Terminal-Bench 2.1",
+            "score": "29.24"
+          },
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "61.39"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "41.89"
+          }
+        ],
+        "card": "https://huggingface.co/ibm-granite/granite-4.2-30b"
+      }
+    },
+    {
+      "id": "granite-4.2-3b",
+      "name": "Granite-4.2-3B",
+      "family": "granite",
+      "repo": "ibm-granite/granite-4.2-3b",
+      "license": "apache-2.0",
+      "released": "2026-08-25",
+      "ollama": [
+        "granite4.2:3b"
+      ],
+      "gguf": "ibm-granite/granite-4.2-3b-GGUF",
+      "params": 3659737600,
+      "activeParams": 3659737600,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 40,
+        "fullKV": 1024
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 3888471200,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 3000984832,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 2602988368,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 2218715920,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 1788696752,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 1372401600,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Compact 3B reasoning model with tool calling and documented coding-agent setups.",
+        "goodAt": [
+          "BFCL v4 52.41, level with the 8B's 52.39",
+          "LiveCodeBench v6 69.71",
+          "Documented OpenCode, Pi, OpenHands setups",
+          "Apache 2.0; 128K native, 512K extended"
+        ],
+        "watchOut": [
+          "No agentic coding scores: card lists NA",
+          "τ³-bench average 45.78, against 58.06 for 8B",
+          "Long-context recall: RULER 128K only 55.30"
+        ],
+        "benchmarks": [
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "52.41"
+          },
+          {
+            "name": "τ³-bench (AVG)",
+            "score": "45.78"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "69.71"
+          },
+          {
+            "name": "SciCode",
+            "score": "24.11"
+          }
+        ],
+        "card": "https://huggingface.co/ibm-granite/granite-4.2-3b"
+      }
+    },
+    {
+      "id": "granite-4.2-8b",
+      "name": "Granite-4.2-8B",
+      "family": "granite",
+      "repo": "ibm-granite/granite-4.2-8b",
+      "license": "apache-2.0",
+      "released": "2026-08-25",
+      "ollama": [
+        "granite4.2:8b"
+      ],
+      "gguf": "ibm-granite/granite-4.2-8b-GGUF",
+      "params": 8791592960,
+      "activeParams": 8791592960,
+      "contextLength": 131072,
+      "attention": {
+        "fullLayers": 40,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 9341067520,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 7209106227,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 6253020493,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 5329903232,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 4296891059,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 3296847360,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "Dense 8B reasoning model with tool calling and documented coding-agent setups.",
+        "goodAt": [
+          "SWE-bench Verified 47.67",
+          "Reasoning-augmented tool calls; BFCL v4 52.39",
+          "Documented OpenCode, Pi, OpenHands setups",
+          "Apache 2.0; 128K native, 512K extended"
+        ],
+        "watchOut": [
+          "Terminal-Bench 2.1 20.56, SWE-bench Pro 19.11",
+          "Extra agentic SFT phase was 30B only",
+          "Custom vLLM parser advised for reasoning output"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "47.67"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "19.11"
+          },
+          {
+            "key": "terminal-bench-2.1",
+            "name": "Terminal-Bench 2.1",
+            "score": "20.56"
+          },
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "52.39"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "30.78"
+          }
+        ],
+        "card": "https://huggingface.co/ibm-granite/granite-4.2-8b"
+      }
+    },
+    {
+      "id": "kimi-k2-thinking",
+      "name": "Kimi-K2-Thinking",
+      "family": "kimi",
+      "repo": "moonshotai/Kimi-K2-Thinking",
+      "license": "other",
+      "released": "2025-11-04",
+      "gguf": "unsloth/Kimi-K2-Thinking-GGUF",
+      "params": 1026408240256,
+      "activeParams": 32861508736,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 61,
+        "fullKV": 576
+      },
+      "experts": {
+        "params": 1014686023680,
+        "count": 384,
+        "perToken": 8,
+        "layers": "-EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 1090558755272,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 841654757010,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 730032860882,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 622259995655,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 501657027425,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 384903090096,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Thinking agent that interleaves reasoning with tool calls over long horizons.",
+        "goodAt": [
+          "Stable over 200-300 sequential tool calls",
+          "SWE-bench Verified 71.3",
+          "Native INT4 (QAT) for ~2x faster decoding",
+          "256K context window"
+        ],
+        "watchOut": [
+          "Huge: 1T total params, 32B active",
+          "Thinking model; no non-thinking mode documented",
+          "Needs runtime support for its tool-call format"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "71.3"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "61.1"
+          },
+          {
+            "name": "Terminal-Bench",
+            "score": "47.1"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "83.1"
+          }
+        ],
+        "card": "https://huggingface.co/moonshotai/Kimi-K2-Thinking"
+      }
+    },
+    {
+      "id": "minimax-m2.7",
+      "name": "MiniMax-M2.7",
+      "family": "minimax",
+      "repo": "MiniMaxAI/MiniMax-M2.7",
+      "license": "other",
+      "released": "2026-04-09",
+      "gguf": "unsloth/MiniMax-M2.7-GGUF",
+      "params": 228689764864,
+      "activeParams": 11030553088,
+      "contextLength": 204800,
+      "attention": {
+        "fullLayers": 62,
+        "fullKV": 2048
+      },
+      "experts": {
+        "params": 224680476672,
+        "count": 256,
+        "perToken": 8,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 242982875168,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 187525607188,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 162655595260,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 138643169949,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 111772122577,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 85758661824,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Agentic model for software engineering, agent harnesses and multi-agent productivity work.",
+        "goodAt": [
+          "Terminal Bench 2 57.0%",
+          "SWE-Pro 56.22%, SWE Multilingual 76.5",
+          "Native Agent Teams and dynamic tool search",
+          "Tool calling guide provided"
+        ],
+        "watchOut": [
+          "Non-commercial licence; commercial needs approval"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "56.22"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "57.0"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "76.5"
+          },
+          {
+            "name": "Multi SWE Bench",
+            "score": "52.7"
+          }
+        ],
+        "card": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7"
+      }
+    },
+    {
+      "id": "ministral-3-14b",
+      "name": "Ministral-3-14B",
+      "family": "ministral",
+      "repo": "mistralai/Ministral-3-14B-Instruct-2512",
+      "license": "apache-2.0",
+      "released": "2025-12-02",
+      "ollama": [
+        "ministral-3:14b"
+      ],
+      "gguf": "unsloth/Ministral-3-14B-Instruct-2512-GGUF",
+      "params": 13945031680,
+      "activeParams": 13945031680,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 40,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 14816596160,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 11434925978,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 9918403782,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 8454175456,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 6815634234,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 5229386880,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Edge-oriented general instruct model with vision and native function calling.",
+        "goodAt": [
+          "Native function calling and JSON output",
+          "256K context window",
+          "Apache 2.0 licence"
+        ],
+        "watchOut": [
+          "No coding-agent benchmarks for instruct model"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512"
+      }
+    },
+    {
+      "id": "ministral-3-3b",
+      "name": "Ministral-3-3B",
+      "family": "ministral",
+      "repo": "mistralai/Ministral-3-3B-Instruct-2512",
+      "license": "apache-2.0",
+      "released": "2025-12-02",
+      "ollama": [
+        "ministral-3:3b"
+      ],
+      "gguf": "unsloth/Ministral-3-3B-Instruct-2512-GGUF",
+      "params": 3849090048,
+      "activeParams": 3849090048,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 26,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 4089658176,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 3156253839,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 2737665297,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 2333510842,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 1881242761,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 1443408768,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Smallest Ministral 3, for lightweight edge tasks, with native function calling.",
+        "goodAt": [
+          "Native function calling and JSON output",
+          "256K context window",
+          "Fits in 8GB of VRAM in FP8",
+          "Apache 2.0 licence"
+        ],
+        "watchOut": [
+          "Aimed at captioning, classification, extraction",
+          "No coding-agent benchmarks for instruct model",
+          "Lab advises keeping the tool set minimal"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512"
+      }
+    },
+    {
+      "id": "ministral-3-8b",
+      "name": "Ministral-3-8B",
+      "family": "ministral",
+      "repo": "mistralai/Ministral-3-8B-Instruct-2512",
+      "license": "apache-2.0",
+      "released": "2025-12-02",
+      "ollama": [
+        "ministral-3:8b",
+        "ministral-3"
+      ],
+      "gguf": "unsloth/Ministral-3-8B-Instruct-2512-GGUF",
+      "params": 8918026240,
+      "activeParams": 8918026240,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 34,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 9475402880,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 7312781517,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 6342946163,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 5406553408,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 4358685325,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 3344259840,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Edge-oriented 8B instruct model with vision and native function calling.",
+        "goodAt": [
+          "Native function calling and JSON output",
+          "256K context window",
+          "Fits in 12GB of VRAM in FP8",
+          "Apache 2.0 licence"
+        ],
+        "watchOut": [
+          "No coding-agent benchmarks for instruct model",
+          "Lab advises keeping the tool set minimal"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/mistralai/Ministral-3-8B-Instruct-2512"
+      }
+    },
+    {
+      "id": "nemotron-3-nano-30b-a3b",
+      "name": "Nemotron-3-Nano-30B-A3B",
+      "family": "nemotron",
+      "repo": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+      "license": "other",
+      "released": "2025-12-15",
+      "ollama": [
+        "nemotron-3-nano:30b"
+      ],
+      "gguf": "unsloth/Nemotron-3-Nano-30B-A3B-GGUF",
+      "params": 31577937344,
+      "activeParams": 3580073408,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 6,
+        "fullKV": 512,
+        "stateBytes": 48234496
+      },
+      "experts": {
+        "params": 29374808064,
+        "count": 128,
+        "perToken": 6,
+        "layers": "-E-E--E-E-E--E-E-E--E-E-E--E-E-E--E-E-E-E--E-E-E-E-E"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 33551558428,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 25893908622,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 22459807936,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 19144124515,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 15433716877,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 11841726504,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Unified reasoning/chat hybrid Mamba-MoE model for building AI agents.",
+        "goodAt": [
+          "30B hybrid Mamba-MoE, ~3.5B active",
+          "Up to 1M context; RULER 1M 86.3",
+          "BFCL v4 53.8",
+          "Reasoning on/off and token budget control"
+        ],
+        "watchOut": [
+          "Weak agentic coding: SWE-Bench 38.8 (OpenHands)",
+          "Needs a custom reasoning parser",
+          "NVIDIA Open Model License, not Apache"
+        ],
+        "benchmarks": [
+          {
+            "name": "SWE-Bench (OpenHands)",
+            "score": "38.8"
+          },
+          {
+            "name": "Terminal Bench (hard subset)",
+            "score": "8.5"
+          },
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "53.8"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "68.3"
+          }
+        ],
+        "card": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16"
+      }
+    },
+    {
+      "id": "nemotron-3-super-120b-a12b",
+      "name": "Nemotron-3-Super-120B-A12B",
+      "family": "nemotron",
+      "repo": "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16",
+      "license": "other",
+      "released": "2026-03-11",
+      "ollama": [
+        "nemotron-3-super:120b"
+      ],
+      "gguf": "unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF",
+      "params": 123611012096,
+      "activeParams": 15712541696,
+      "statedActiveParams": 12000000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 8,
+        "fullKV": 512,
+        "stateBytes": 167772160
+      },
+      "experts": {
+        "params": 112742891520,
+        "count": 512,
+        "perToken": 22,
+        "layers": "-E-E-E--E-E-E-E--E-E-E-E--E-E-E-E-E--E-E-E-E-E--E-E-E-E-E--E-E-E-E-E--E-E-E-E--E-E-E-E-E"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 131336700352,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 101361029919,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 87918332353,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 74939176083,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 60414882162,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 46354129536,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Hybrid Mamba LatentMoE model for collaborative agents and high-volume agentic work.",
+        "goodAt": [
+          "120B LatentMoE, 12B active, built-in MTP",
+          "Up to 1M context; RULER 1M 91.75",
+          "SWE-Bench 59.20 in OpenCode harness",
+          "Documented OpenCode setup"
+        ],
+        "watchOut": [
+          "Needs a custom reasoning parser",
+          "Coding agents need a non-empty-content setting"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "setting": "OpenHands",
+            "score": "60.47"
+          },
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "setting": "OpenCode",
+            "score": "59.20"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "31.00"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "setting": "OpenHands",
+            "score": "45.78"
+          },
+          {
+            "name": "LiveCodeBench (v5)",
+            "score": "81.19"
+          }
+        ],
+        "card": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16"
+      }
+    },
+    {
+      "id": "nemotron-3.5-lightning-30b-a3b",
+      "name": "Nemotron-3.5-Lightning-30B-A3B",
+      "family": "nemotron",
+      "repo": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16",
+      "license": "other",
+      "released": "2026-08-11",
+      "ollama": [
+        "nemotron-3.5-lightning:30b"
+      ],
+      "gguf": "unsloth/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF",
+      "params": 31577937344,
+      "activeParams": 3580073408,
+      "statedActiveParams": 3000000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 6,
+        "fullKV": 512,
+        "stateBytes": 48234496
+      },
+      "experts": {
+        "params": 29374808064,
+        "count": 128,
+        "perToken": 6,
+        "layers": "-E-E--E-E-E--E-E-E--E-E-E--E-E-E--E-E-E-E--E-E-E-E-E"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 33551558428,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 25893908622,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 22459807936,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 19144124515,
+          "bitsPerWeight": 4.85
+        }
+      ],
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "Full-precision reference release of a 30B-A3B reasoning model, meant for customization.",
+        "goodAt": [
+          "Up to 1M context on bigger setups",
+          "PinchBench 85.37",
+          "Speculative decoding: MTP, DFlash, DSpark"
+        ],
+        "watchOut": [
+          "This build is for fine-tuning; serve the NVFP4 build",
+          "Trails Qwen3.6-35B-A3B on every coding row",
+          "Coding agents need a non-empty-content setting"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "51.56"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "39.33"
+          },
+          {
+            "key": "terminal-bench-2.1",
+            "name": "Terminal-Bench 2.1",
+            "score": "24.58"
+          },
+          {
+            "name": "PinchBench",
+            "score": "85.37"
+          }
+        ],
+        "card": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16"
+      }
+    },
+    {
+      "id": "qwen2.5-coder-32b",
+      "name": "Qwen2.5-Coder-32B",
+      "family": "qwen2.5-coder",
+      "repo": "Qwen/Qwen2.5-Coder-32B-Instruct",
+      "license": "apache-2.0",
+      "released": "2024-11-06",
+      "ollama": [
+        "qwen2.5-coder:32b"
+      ],
+      "gguf": "unsloth/Qwen2.5-Coder-32B-Instruct-GGUF",
+      "params": 32763876352,
+      "activeParams": 32763876352,
+      "contextLength": 32768,
+      "attention": {
+        "fullLayers": 64,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 34811618624,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 26866378609,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 23303307055,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 19863100038,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 16013344567,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 12286453632,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Code-specialised dense model for code generation, reasoning and repair.",
+        "goodAt": [
+          "Aider code repair 73.7 (per Qwen blog)",
+          "Strong code generation across 40+ languages",
+          "128K context with YaRN"
+        ],
+        "watchOut": [
+          "Tool calling not documented by the lab",
+          "32k by default; YaRN beyond can hurt short prompts",
+          "Dense 32B; older (Nov 2024) generation"
+        ],
+        "benchmarks": [
+          {
+            "name": "Aider",
+            "score": "73.7"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct"
+      }
+    },
+    {
+      "id": "qwen3-32b",
+      "name": "Qwen3-32B",
+      "family": "qwen3",
+      "repo": "Qwen/Qwen3-32B",
+      "license": "apache-2.0",
+      "released": "2025-04-27",
+      "ollama": [
+        "qwen3:32b"
+      ],
+      "gguf": "unsloth/Qwen3-32B-GGUF",
+      "params": 32762123264,
+      "activeParams": 32762123264,
+      "contextLength": 32768,
+      "attention": {
+        "fullLayers": 64,
+        "fullKV": 2048
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 34809755968,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 26864941076,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 23302060172,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 19862037229,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 16012487745,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 12285796224,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "B",
+      "tierNote": "Dependable tool calling, but weaker or unproven on long agentic coding sessions.",
+      "profile": {
+        "summary": "General-purpose dense Qwen3 model with switchable thinking and agent tool use.",
+        "goodAt": [
+          "Switch thinking on/off, incl. /think, /no_think",
+          "Tool calling in thinking and non-thinking modes",
+          "Up to 131K context validated with YaRN"
+        ],
+        "watchOut": [
+          "Native context only 32K; YaRN needed beyond",
+          "General model, not code-specialised",
+          "Dense 32B: slower than MoE models of similar size"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/Qwen/Qwen3-32B"
+      }
+    },
+    {
+      "id": "qwen3-coder-30b-a3b",
+      "name": "Qwen3-Coder-30B-A3B",
+      "family": "qwen3-coder",
+      "repo": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "license": "apache-2.0",
+      "released": "2025-07-31",
+      "ollama": [
+        "qwen3-coder:30b",
+        "qwen3-coder"
+      ],
+      "gguf": "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF",
+      "params": 30532122624,
+      "activeParams": 3353032704,
+      "statedActiveParams": 3300000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 48,
+        "fullKV": 1024
+      },
+      "experts": {
+        "params": 28991029248,
+        "count": 128,
+        "perToken": 8,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 32440380288,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 25036340552,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 21715972216,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 18510099341,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 14922574932,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 11449545984,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Compact MoE coding model for agentic coding in harnesses like Qwen Code and Cline.",
+        "goodAt": [
+          "30.5B MoE, only 3.3B active: fast for its size",
+          "256K native context, up to 1M with YaRN",
+          "Tuned for agentic coding with tool calling",
+          "Works with Qwen Code and Cline"
+        ],
+        "watchOut": [
+          "Non-thinking only: no reasoning mode",
+          "Tool calls use its own format; runtime must support it"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct"
+      }
+    },
+    {
+      "id": "qwen3-coder-480b-a35b",
+      "name": "Qwen3-Coder-480B-A35B",
+      "family": "qwen3-coder",
+      "repo": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+      "license": "apache-2.0",
+      "released": "2025-07-22",
+      "ollama": [
+        "qwen3-coder:480b"
+      ],
+      "gguf": "unsloth/Qwen3-Coder-480B-A35B-Instruct-GGUF",
+      "params": 480154875392,
+      "activeParams": 35474765312,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 62,
+        "fullKV": 2048
+      },
+      "experts": {
+        "params": 468084326400,
+        "count": 160,
+        "perToken": 8,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 510164555104,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 393726997821,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 341510155123,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 291093893206,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 234675695348,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 180058078272,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Flagship Qwen3 agentic coding model, claimed comparable to Claude Sonnet on agentic coding.",
+        "goodAt": [
+          "Lab claims Claude Sonnet-level agentic coding",
+          "256K native context, up to 1M with YaRN",
+          "Tool calling for Qwen Code, Cline and similar"
+        ],
+        "watchOut": [
+          "Very large: 480B total, 35B active",
+          "Non-thinking only: no reasoning mode"
+        ],
+        "benchmarks": [],
+        "card": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct"
+      }
+    },
+    {
+      "id": "qwen3-coder-next",
+      "name": "Qwen3-Coder-Next",
+      "family": "qwen3-coder",
+      "repo": "Qwen/Qwen3-Coder-Next",
+      "license": "apache-2.0",
+      "released": "2026-01-30",
+      "ollama": [
+        "qwen3-coder-next"
+      ],
+      "gguf": "unsloth/Qwen3-Coder-Next-GGUF",
+      "params": 79674391296,
+      "activeParams": 3874929408,
+      "statedActiveParams": 3000000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 12,
+        "fullKV": 1024,
+        "stateBytes": 75497472
+      },
+      "experts": {
+        "params": 77309411328,
+        "count": 512,
+        "perToken": 10,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 84654040752,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 65333000863,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 56668410809,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 48302599723,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 38940858746,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 29877896736,
+          "bitsPerWeight": 3
+        }
+      ],
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Open-weight coding-agent model built for local development and long-horizon agentic coding.",
+        "goodAt": [
+          "80B MoE, only 3B active: cheap per token",
+          "Trained for tool use and recovery from failures",
+          "256K context; works with Claude Code, Cline etc.",
+          "Hybrid layout: Gated DeltaNet plus attention"
+        ],
+        "watchOut": [
+          "Non-thinking only: no reasoning mode",
+          "80B total weights still need lots of memory",
+          "Needs a recent runtime with its tool-call parser"
+        ],
+        "benchmarks": [
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "36.2"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3-Coder-Next"
+      }
+    },
+    {
+      "id": "qwen3.5-2b",
+      "name": "Qwen3.5-2B",
+      "family": "qwen3.5",
+      "repo": "Qwen/Qwen3.5-2B",
+      "license": "apache-2.0",
+      "released": "2026-02-28",
+      "ollama": [
+        "qwen3.5:2b"
+      ],
+      "gguf": "unsloth/Qwen3.5-2B-GGUF",
+      "params": 2274069824,
+      "activeParams": 2274069824,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 6,
+        "fullKV": 1024,
+        "stateBytes": 18874368
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 2416199188,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 1864737256,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 1617432162,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 1378654831,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 1111451626,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 852776184,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "2B multimodal model the lab aims at prototyping and task-specific fine-tuning.",
+        "goodAt": [
+          "Documented tool calling (qwen3_coder parser)",
+          "BFCL-V4 43.6, above Qwen3-4B-2507's 39.9",
+          "262K native context",
+          "Non-thinking by default, thinking on request"
+        ],
+        "watchOut": [
+          "Lab targets prototyping and fine-tuning",
+          "No coding or agentic coding scores on card",
+          "TAU2-Bench 48.8 even with thinking on"
+        ],
+        "benchmarks": [
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "setting": "thinking",
+            "score": "43.6"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "setting": "thinking",
+            "score": "48.8"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.5-2B"
+      }
+    },
+    {
+      "id": "qwen3.5-4b",
+      "name": "Qwen3.5-4B",
+      "family": "qwen3.5",
+      "repo": "Qwen/Qwen3.5-4B",
+      "license": "apache-2.0",
+      "released": "2026-02-27",
+      "ollama": [
+        "qwen3.5:4b"
+      ],
+      "gguf": "unsloth/Qwen3.5-4B-GGUF",
+      "params": 4659865088,
+      "activeParams": 4659865088,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 8,
+        "fullKV": 2048,
+        "stateBytes": 50331648
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 4951106656,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 3821089372,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 3314329044,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 2825043210,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 2277509062,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 1747449408,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Small multimodal general model with thinking and documented tool calling.",
+        "goodAt": [
+          "TAU2-Bench 79.9, above Qwen3.5-9B's 79.1",
+          "262K native context, ~1M with YaRN",
+          "Documented tool calling (qwen3_coder parser)"
+        ],
+        "watchOut": [
+          "No published agentic coding scores",
+          "BFCL-V4 50.3, against 66.1 for Qwen3.5-9B",
+          "Thinks by default; lab advises 128K+ context"
+        ],
+        "benchmarks": [
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "50.3"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "score": "79.9"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "55.8"
+          },
+          {
+            "name": "OJBench",
+            "score": "24.1"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.5-4B"
+      }
+    },
+    {
+      "id": "qwen3.5-9b",
+      "name": "Qwen3.5-9B",
+      "family": "qwen3.5",
+      "repo": "Qwen/Qwen3.5-9B",
+      "license": "apache-2.0",
+      "released": "2026-02-27",
+      "ollama": [
+        "qwen3.5:9b"
+      ],
+      "gguf": "unsloth/Qwen3.5-9B-GGUF",
+      "params": 9653104368,
+      "activeParams": 9653104368,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 8,
+        "fullKV": 2048,
+        "stateBytes": 50331648
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 10256423391,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 7915545582,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 6865770482,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 5852194523,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 4717954760,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 3619914138,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "C",
+      "tierNote": "Tool calling works but tends to drift over long sessions, or is undocumented.",
+      "profile": {
+        "summary": "Small dense multimodal general model with thinking and tool use.",
+        "goodAt": [
+          "BFCL-V4 66.1, TAU2-Bench 79.1",
+          "262K native context, ~1M with YaRN",
+          "Documented tool calling (qwen3_coder parser)"
+        ],
+        "watchOut": [
+          "No published agentic coding scores",
+          "LiveCodeBench 65.6, below gpt-oss-20b on card",
+          "Thinks by default; lab advises 128k+ context"
+        ],
+        "benchmarks": [
+          {
+            "key": "bfcl-v4",
+            "name": "BFCL v4",
+            "score": "66.1"
+          },
+          {
+            "key": "tau2-bench",
+            "name": "τ²-Bench",
+            "score": "79.1"
+          },
+          {
+            "key": "livecodebench-v6",
+            "name": "LiveCodeBench v6",
+            "score": "65.6"
+          },
+          {
+            "name": "OJBench",
+            "score": "29.2"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.5-9B"
+      }
+    },
+    {
+      "id": "qwen3.6-27b",
+      "name": "Qwen3.6-27B",
+      "family": "qwen3.6",
+      "repo": "Qwen/Qwen3.6-27B",
+      "license": "apache-2.0",
+      "released": "2026-04-21",
+      "ollama": [
+        "qwen3.6:27b"
+      ],
+      "gguf": "unsloth/Qwen3.6-27B-GGUF",
+      "params": 27781427952,
+      "activeParams": 27781427952,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 16,
+        "fullKV": 2048,
+        "stateBytes": 150994944
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 29517767199,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 22780770921,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 19759540631,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 16842490696,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 13578172912,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 10418035482,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Dense multimodal model aimed at agentic coding and repository-level work.",
+        "goodAt": [
+          "SWE-bench Verified 77.2",
+          "Terminal-Bench 2.0 59.3",
+          "SkillsBench 48.2 (run via OpenCode)",
+          "Preserve-thinking option for agent loops"
+        ],
+        "watchOut": [
+          "Dense 27B: slower than 3B-active MoE models",
+          "Thinks by default; long outputs",
+          "Lab advises at least 128k of context"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "77.2"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "59.3"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "53.5"
+          },
+          {
+            "name": "SkillsBench Avg5",
+            "score": "48.2"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "71.3"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.6-27B"
+      }
+    },
+    {
+      "id": "qwen3.6-35b-a3b",
+      "name": "Qwen3.6-35B-A3B",
+      "family": "qwen3.6",
+      "repo": "Qwen/Qwen3.6-35B-A3B",
+      "license": "apache-2.0",
+      "released": "2026-04-15",
+      "ollama": [
+        "qwen3.6",
+        "qwen3.6:35b"
+      ],
+      "gguf": "unsloth/Qwen3.6-35B-A3B-GGUF",
+      "params": 35951822704,
+      "activeParams": 4746200944,
+      "statedActiveParams": 3000000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 10,
+        "fullKV": 1024,
+        "stateBytes": 62914560
+      },
+      "experts": {
+        "params": 32212254720,
+        "count": 256,
+        "perToken": 8,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 38198811623,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 29480494617,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 25570733898,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 21795792514,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q3_K_M",
+          "bytes": 17571453347,
+          "bitsPerWeight": 3.91
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 13481933514,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Multimodal MoE model focused on agentic coding and repo-level reasoning.",
+        "goodAt": [
+          "SWE-bench Verified 73.4 with only 3B active",
+          "Terminal-Bench 2.0 51.5",
+          "Preserve-thinking option for agent loops",
+          "262K native context, ~1M with YaRN"
+        ],
+        "watchOut": [
+          "Thinks by default; disable via chat_template_kwargs",
+          "Lab advises at least 128k of context",
+          "No /think or /nothink soft switch"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-verified",
+            "name": "SWE-bench Verified",
+            "score": "73.4"
+          },
+          {
+            "key": "terminal-bench-2.0",
+            "name": "Terminal-Bench 2.0",
+            "score": "51.5"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "49.5"
+          },
+          {
+            "name": "MCPMark",
+            "score": "37.0"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "67.2"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B"
+      }
+    },
+    {
+      "id": "qwen3.8-27b",
+      "name": "Qwen3.8-27B",
+      "family": "qwen3.8",
+      "repo": "Qwen/Qwen3.8-27B",
+      "license": "apache-2.0",
+      "released": "2026-08-05",
+      "ollama": [
+        "qwen3.8:27b",
+        "qwen3.8"
+      ],
+      "gguf": "unsloth/Qwen3.8-27B-GGUF",
+      "params": 27781427952,
+      "activeParams": 27781427952,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 16,
+        "fullKV": 2048,
+        "stateBytes": 150994944
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 29517767199,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 22780770921,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q5_K_M",
+          "bytes": 19759540631,
+          "bitsPerWeight": 5.69
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 16842490696,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 10418035482,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Dense vision-language model for coding and long-horizon agentic tasks.",
+        "goodAt": [
+          "Terminal Bench 2.1 73.0 (Terminus)",
+          "SWE-bench Pro 61.7 in Claude Code harness",
+          "Tunable reasoning_effort; preserved thinking default",
+          "262K native context, 1M with YaRN"
+        ],
+        "watchOut": [
+          "Dense 27B: slower than MoE models of similar size",
+          "reasoning_effort defaults to xhigh: long outputs",
+          "Lab does not document tool calling setup"
+        ],
+        "benchmarks": [
+          {
+            "key": "terminal-bench-2.1",
+            "name": "Terminal-Bench 2.1",
+            "setting": "Terminus",
+            "score": "73.0"
+          },
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "61.7"
+          },
+          {
+            "name": "NL2Repo-Bench",
+            "score": "42.3"
+          },
+          {
+            "key": "deep-swe-1.1",
+            "name": "DeepSWE 1.1",
+            "score": "42.2"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.8-27B"
+      }
+    },
+    {
+      "id": "qwen3.8-flash-next",
+      "name": "Qwen3.8-Flash-Next",
+      "family": "qwen3.8",
+      "repo": "Qwen/Qwen3.8-Flash-Next",
+      "license": "other",
+      "released": "2026-08-24",
+      "ollama": [
+        "qwen3.8-flash-next:125b-a6b-q4_K_M"
+      ],
+      "gguf": "unsloth/Qwen3.8-Flash-Next-GGUF",
+      "params": 179999981459,
+      "activeParams": 6000000000,
+      "contextLength": 262144,
+      "attention": {
+        "fullLayers": 12,
+        "fullKV": 1024,
+        "stateBytes": 113246208
+      },
+      "experts": {
+        "params": 120795955200,
+        "count": 512,
+        "perToken": 10,
+        "layers": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+      },
+      "quants": [
+        {
+          "name": "Q8_0",
+          "bytes": 191249980300,
+          "bitsPerWeight": 8.5
+        },
+        {
+          "name": "Q6_K",
+          "bytes": 147599984796,
+          "bitsPerWeight": 6.56
+        },
+        {
+          "name": "Q4_K_M",
+          "bytes": 109124988760,
+          "bitsPerWeight": 4.85
+        },
+        {
+          "name": "Q2_K",
+          "bytes": 67499993047,
+          "bitsPerWeight": 3
+        }
+      ],
+      "vision": true,
+      "tier": "A",
+      "tierNote": "Built and evaluated for agentic coding, with published scores to back it.",
+      "profile": {
+        "summary": "Experimental preview of the Qwen4 architecture: sparse MoE tuned for efficient long context.",
+        "goodAt": [
+          "125B MoE with only 6B active",
+          "SWE-bench Pro 62.5, Multilingual 81.0",
+          "Toolathlon Verified 73.5",
+          "Sparse attention cuts long-context latency"
+        ],
+        "watchOut": [
+          "Experimental preview architecture",
+          "Custom Qwen licence; MaaS firms need separate deal",
+          "~180B weights incl. 51B n-gram embeddings"
+        ],
+        "benchmarks": [
+          {
+            "key": "swe-bench-pro",
+            "name": "SWE-bench Pro",
+            "score": "62.5"
+          },
+          {
+            "key": "swe-bench-multilingual",
+            "name": "SWE-bench Multilingual",
+            "score": "81.0"
+          },
+          {
+            "key": "deep-swe-1.1",
+            "name": "DeepSWE 1.1",
+            "score": "58.7"
+          },
+          {
+            "name": "Toolathlon Verified (Pass@1)",
+            "score": "73.5"
+          }
+        ],
+        "card": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next"
+      }
+    }
+  ]
+}

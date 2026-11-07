@@ -1,0 +1,36 @@
+  lo0                                                                Apple M5 Pro · 48 GiB for models · Ollama running
+  
+    1 Home            What is on this machine?                                                                        
+    2 Your sessions                                                                                                   
+    3 Models          20 GiB of models · 197 GiB free                                                                 
+    4 Agents                                                                                                          
+  ▌ 5 This machine    OLLAMA  0.34.4 · running                                                                        
+                        MODEL                                           ON DISK  IS                                   
+                      ▌ coder:30b                                        18 GiB  Coder-30B-A3B · Q4_K_M               
+                          lo0/coder-30b-a3b:256k                      shares it  made by lo0, 5 Nov                   
+                                                                      used by ~/.local/bin/claude-local               
+                        mystery:2b                                        2 GiB  not in the catalogue                 
+                                                                                                                      
+                      LM STUDIO  not installed                                                                        
+                                                                                                                      
+                      CHANGES LO0 MADE                                                                                
+                        Added lo0/coder-30b-a3b:256k to Ollama · 5 Nov                                                
+                        Wrote ~/.local/bin/claude-local · 5 Nov                                                       
+                                                                                                                      
+                      Machine                                                                                         
+                        System        macOS 27.0.1 · arm64                                                            
+                        CPU           Apple M5 Pro · 18 cores                                                         
+                        Memory        64 GiB unified · 48 GiB usable by models                                        
+                        GPU           Apple M5 Pro · 20 cores · Metal 4                                               
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+  
+  ↑↓ model   x remove   u undo what lo0 changed   pgup pgdn scroll   ctrl+k commands   ? keys

@@ -1,0 +1,61 @@
+lo0 scan                                                4 Nov 2026 18:52 · 612ms
+
+Machine
+  System        macOS 27.0.1 · arm64
+  CPU           Apple M5 Pro · 18 cores
+  Memory        64 GiB unified · 48 GiB usable by models
+  GPU           Apple M5 Pro · 20 cores · Metal 4
+  Disk          412 GiB free of 926 GiB
+
+Local runtimes
+  Ollama        0.34.4 · running on 127.0.0.1:11434 · 3 models
+                qwen3.6          36.0B  Q4_K_M  22.1 GiB  256k  tools thinking
+                qwen3-coder:30b  30.5B  Q4_K_M  17.3 GiB  256k  tools
+                gemma-chat:2b     2.6B  Q8_0     2.6 GiB    8k  no tool calling
+  LM Studio     not installed
+  llama.cpp     b6123 · installed · no models
+
+Claude Code setup
+  Claude Code   2.1.317 in the Claude app · 2.1.221 on PATH, behind the app
+                newest 2.1.318, stable 2.1.311 · lo0 checked against 2.1.318
+  Projects      2 projects
+  Instructions  4 files · 242 lines
+                2 CLAUDE.md · 1 AGENTS.md · 1 rule
+  MCP servers   4 · 2 http · 2 stdio
+                chrome-devtools  stdio  user
+                stitch           http   user
+                cloudflare       http   plugin cloudflare
+                railway          stdio  local app
+  Hooks         4 handlers on 4 events
+                PostToolUse · SessionStart · Stop · UserPromptSubmit
+  Extensions    1 command · 0 subagents · 2 skills
+  Plugins       2 plugins, 1 enabled
+  Permissions   17 allow · 2 deny · 1 ask
+
+Session history
+  Sessions      427 · 51,041 turns · 8 Mar – 4 Nov 2026
+  Peak context  p50 190k · p90 560k · max 943k
+  Fits within   32k  64k  128k  256k    1M
+                <1%   1%   33%   61%  100%
+  Compaction    3% of sessions · 16 compactions, 13 automatic
+  Subagents     31% of sessions · 789 calls
+  Requests      3,014 · median 5 tool calls · 1 in 10 over 44
+                median wait 58s · median 3.8k tokens written
+  Thinking      75% of turns at high effort · 26% of output spent thinking
+  Images        196 sessions · 39 pasted, 4,359 from tools
+  Changes       +265,620 −35,510 lines · 2,442 files · 93 pull requests
+  Tool errors   2% of tool calls failed · 1,416 of 57,071
+  Interrupted   6 usage limits in 3 sessions · 46 failed responses
+                781 retries, 751 after a dropped connection
+  Skills        translations 89 · code-review 17
+  Versions      Claude Code 2.1.161 to 2.1.317 (3 versions)
+  Tools         Bash 35,081 · Edit 3,790 · Read 3,040 · Write 2,021 · +5 more
+  MCP calls     Claude_Browser 4,741 · claude-in-chrome 2,941 · github 65
+  Languages     TypeScript 47% · PHP 28% · Markdown 17% · CSS 8%
+  Models        claude-opus-5-5 75% · claude-fable-5 25%
+  Repos         ~/Code/app         336 sessions  p90 560k
+                ~/Code/site         61 sessions  p90 539k
+                /srv/shared/tools    3 sessions   p90 41k
+
+1 warning
+  setup         reading ~/.claude/settings.json: unexpected end of JSON input

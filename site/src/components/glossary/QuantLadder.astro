@@ -1,0 +1,156 @@
+---
+/**
+ * One model's file size at each quantisation in the catalogue, against a
+ * chosen amount of GPU memory. A quant fits with room when the weights, the
+ * runtime and a 32k f16 cache all fit, the least an agent can work in.
+ */
+import Figure from './Figure.astro';
+import { model, kvBytes, runtimeOverhead, GiB } from '../../data/models';
+
+const m = model('qwen3-coder-30b-a3b');
+const workingContext = 32 * 1024;
+const kv = kvBytes(m, workingContext);
+const rows = [
+  { name: 'BF16', bpw: 16, bytes: m.params * 2 },
+  ...m.quants.map((q) => ({ name: q.name, bpw: q.bitsPerWeight, bytes: q.bytes })),
+];
+const memories = [16, 24, 32, 48];
+const initial = 24;
+const scale = Math.ceil(Math.max(...rows.map((r) => r.bytes)) / GiB / 10) * 10;
+const pct = (gib: number) => `${((gib / scale) * 100).toFixed(2)}%`;
+
+type State = 'room' | 'tight' | 'over';
+const state = (bytes: number, mem: number): State =>
+  bytes + runtimeOverhead + kv <= mem * GiB ? 'room' : bytes + runtimeOverhead <= mem * GiB ? 'tight' : 'over';
+
+const css = memories
+  .map((mem) => {
+    const on = `.ladder:has(input[value='${mem}']:checked)`;
+    return (
+      `${on}{--mem:${pct(mem)}}` +
+      rows.map((r) => `${on} [data-q='${r.name}'] .st-${state(r.bytes, mem)}{display:inline}` +
+        `${on} [data-q='${r.name}'] .fill{background:var(--c-${state(r.bytes, mem)})}`).join('')
+    );
+  })
+  .join('');
+const gib = (b: number) => (b / GiB).toFixed(1);
+---
+<Figure title={`${m.name} at every quantisation`} for="quantisation">
+  <style is:inline set:html={css}></style>
+  <div class="ladder">
+    <fieldset>
+      <legend>GPU memory</legend>
+      <div class="opts">
+        {memories.map((mem) => (
+          <label><input type="radio" name="ladder-mem" value={mem} checked={mem === initial} /><span>{mem} GiB</span></label>
+        ))}
+      </div>
+    </fieldset>
+
+    <ul class="key" role="list" aria-hidden="true">
+      <li><i class="k-room"></i>Fits, with room for context</li>
+      <li><i class="k-tight"></i>Weights fit, no room for context</li>
+      <li><i class="k-over"></i>Too big</li>
+    </ul>
+
+    <table>
+      <thead>
+        <tr><th scope="col">Format</th><th scope="col" class="num">Bits</th><th scope="col"><span class="visually-hidden">Size against memory</span></th><th scope="col" class="num">Size</th></tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr data-q={r.name}>
+            <th scope="row">{r.name}</th>
+            <td class="num tnum">{r.bpw}</td>
+            <td class="barcell">
+              <span class="bar"><span class="fill" style={`width:${pct(r.bytes / GiB)}`}></span></span>
+              <span class="st visually-hidden">
+                <span class="st-room">Fits, with room for context</span>
+                <span class="st-tight">Fits, no room for context</span>
+                <span class="st-over">Too big</span>
+              </span>
+            </td>
+            <td class="num tnum">{gib(r.bytes)} GiB</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <Fragment slot="note">
+    File sizes are estimates: parameters × the typical bits per weight for each format. Real files differ
+    by a few per cent. “Room for context” means the weights,
+    {(runtimeOverhead / GiB).toFixed(1)} GiB for the runtime and a {workingContext / 1024}k cache
+    ({gib(kv)} GiB at f16) all fit: the least a coding agent can work in. lo0 does not recommend formats
+    below about 3.5 bits for agent work.
+  </Fragment>
+</Figure>
+
+<style>
+  @property --mem { syntax: '<percentage>'; inherits: true; initial-value: 0%; }
+
+  .ladder {
+    --c-room: var(--accent);
+    --c-tight: var(--warn);
+    --c-over: color-mix(in oklch, var(--ink-3) 45%, transparent);
+    display: grid;
+    gap: 1.5rem;
+    transition: --mem 500ms var(--ease-in-out);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  thead th { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400; color: var(--ink-3); text-align: start; padding-bottom: 0.5rem; }
+  tbody th { font-family: var(--font-mono); font-weight: 500; text-align: start; white-space: nowrap; }
+  td, tbody th { padding: 0.45rem 0; border-top: 1px solid var(--rule); vertical-align: middle; }
+  .num { text-align: end; white-space: nowrap; font-family: var(--font-mono); color: var(--ink-2); }
+  th.num { padding-left: 0.75rem; }
+  td.num { padding-left: 0.75rem; }
+  td.num:last-child { color: var(--ink); }
+
+  .barcell { width: 62%; padding-left: 1.25rem; }
+
+  .bar {
+    position: relative;
+    display: block;
+    height: 0.9rem;
+    border-radius: 3px;
+    background: var(--bg-sunk);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -0.45rem;
+      bottom: -0.45rem;
+      left: var(--mem);
+      border-left: 1.5px dashed var(--ink);
+    }
+  }
+
+  .fill {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    transition: background-color 250ms;
+  }
+
+  .st > span { display: none; }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: -0.5rem;
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+
+    & li { display: flex; align-items: center; gap: 0.45rem; }
+    & i { width: 0.7rem; height: 0.7rem; border-radius: 2px; }
+    & .k-room { background: var(--c-room); }
+    & .k-tight { background: var(--c-tight); }
+    & .k-over { background: var(--c-over); }
+  }
+
+  @media (width < 34rem) {
+    .barcell { width: 50%; padding-left: 0.75rem; }
+    .num:nth-child(2) { display: none; }
+  }
+</style>

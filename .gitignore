@@ -1,0 +1,10 @@
+/bin/
+/dist/
+*.test
+*.out
+coverage.*
+.DS_Store
+.idea/
+/lo0-report-*.txt
+.claude/launch.json
+/.cloudflare/

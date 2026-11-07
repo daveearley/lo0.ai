@@ -1,0 +1,36 @@
+  lo0                                                                Apple M5 Pro · 48 GiB for models · Ollama running
+  
+    1 Home            What is on this machine?                                                                        
+    2 Your sessions                                                                                                   
+    3 Models          Machine                                                                                         
+    4 Agents            System        macOS 27.0.1 · arm64                                                            
+  ▌ 5 This machine      CPU           Apple M5 Pro · 18 cores                                                         
+                        Memory        64 GiB unified · 48 GiB usable by models                                        
+                        GPU           Apple M5 Pro · 20 cores · Metal 4                                               
+                                                                                                                      
+                      Local runtimes                                                                                  
+                        Ollama        0.34.4 · running on 127.0.0.1:11434 · 2 models                                  
+                                      coder:30b        Q4_K_M  17.2 GiB  256k  tools                                  
+                                      tiny:Q4_K_M  4B  Q4_K_M   2.3 GiB        no tool calling                        
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+  
+  pgup pgdn scroll   ctrl+k commands   ? keys

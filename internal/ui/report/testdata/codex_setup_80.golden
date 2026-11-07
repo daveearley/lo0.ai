@@ -1,0 +1,34 @@
+Claude Code setup
+  Claude Code   2.1.317 in the Claude app · 2.1.221 on PATH, behind the app
+                newest 2.1.318, stable 2.1.311 · lo0 checked against 2.1.318
+  Projects      2 projects
+  Instructions  4 files · 242 lines
+                2 CLAUDE.md · 1 AGENTS.md · 1 rule
+  MCP servers   4 · 2 http · 2 stdio
+                chrome-devtools  stdio  user
+                stitch           http   user
+                cloudflare       http   plugin cloudflare
+                railway          stdio  local app
+  Hooks         4 handlers on 4 events
+                PostToolUse · SessionStart · Stop · UserPromptSubmit
+  Extensions    1 command · 0 subagents · 2 skills
+  Plugins       2 plugins, 1 enabled
+  Permissions   17 allow · 2 deny · 1 ask
+
+Codex setup
+  Codex         0.155.0 in your history
+  Model         gpt-5.5 · through openai
+  Providers     2 providers · 1 local
+  Profiles      2 profiles
+                fast · deep
+  Projects      1 project
+  Instructions  2 files · 52 lines
+                1 global · 1 project file
+  MCP servers   2 · 1 http · 1 stdio
+                github  stdio  user
+                db      http   project app
+  Hooks         2 handlers on 2 events
+                PreToolUse · Stop
+  Extensions    1 skill · 1 prompt · 0 agents
+  Rules         1 file · 3 rules
+  Plugins       2 plugins, 1 enabled

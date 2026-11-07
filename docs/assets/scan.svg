@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 728 1042" width="728" height="1042" role="img" aria-label="Output of lo0 scan">
+  <rect width="728" height="1042" rx="10" fill="#14171C"/>
+  <rect x="0.5" y="0.5" width="727" height="1041" rx="10" fill="none" stroke="#2A2F37"/>
+  <g fill="#3A3F47"><circle cx="20" cy="18" r="5"/><circle cx="38" cy="18" r="5"/><circle cx="56" cy="18" r="5"/></g>
+  <line x1="0" y1="36" x2="728" y2="36" stroke="#2A2F37"/>
+  <g font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" xml:space="preserve">
+    <text x="28.0" y="74" fill="#6FC2B0">$</text>
+    <text x="44.8" y="74" fill="#E6E6E6">lo0 scan</text>
+    <text x="28.0" y="114" fill="#6FC2B0" font-weight="600">lo0</text>
+    <text x="61.6" y="114" fill="#E6E6E6" font-weight="600">scan</text>
+    <text x="498.4" y="114" fill="#5C6068">4 Nov 2026 18:52 · 612ms</text>
+    <text x="28.0" y="154" fill="#E6E6E6" font-weight="600">Machine</text>
+    <text x="44.8" y="174" fill="#8A8F98">System</text>
+    <text x="162.4" y="174" fill="#E6E6E6">macOS 27.0.1</text>
+    <text x="271.6" y="174" fill="#5C6068">·</text>
+    <text x="288.4" y="174" fill="#E6E6E6">arm64</text>
+    <text x="44.8" y="194" fill="#8A8F98">CPU</text>
+    <text x="162.4" y="194" fill="#E6E6E6">Apple M5 Pro</text>
+    <text x="271.6" y="194" fill="#5C6068">·</text>
+    <text x="288.4" y="194" fill="#E6E6E6">18 cores</text>
+    <text x="44.8" y="214" fill="#8A8F98">Memory</text>
+    <text x="162.4" y="214" fill="#E6E6E6">64 GiB unified</text>
+    <text x="288.4" y="214" fill="#5C6068">·</text>
+    <text x="305.2" y="214" fill="#6FC2B0">48 GiB usable by models</text>
+    <text x="44.8" y="234" fill="#8A8F98">GPU</text>
+    <text x="162.4" y="234" fill="#E6E6E6">Apple M5 Pro</text>
+    <text x="271.6" y="234" fill="#5C6068">·</text>
+    <text x="288.4" y="234" fill="#E6E6E6">20 cores</text>
+    <text x="364.0" y="234" fill="#5C6068">·</text>
+    <text x="380.8" y="234" fill="#E6E6E6">Metal 4</text>
+    <text x="44.8" y="254" fill="#8A8F98">Disk</text>
+    <text x="162.4" y="254" fill="#E6E6E6">412 GiB free</text>
+    <text x="271.6" y="254" fill="#5C6068">of 926 GiB</text>
+    <text x="28.0" y="294" fill="#E6E6E6" font-weight="600">Local runtimes</text>
+    <text x="44.8" y="314" fill="#8A8F98">Ollama</text>
+    <text x="162.4" y="314" fill="#E6E6E6">0.34.4</text>
+    <text x="221.2" y="314" fill="#5C6068">·</text>
+    <text x="238.0" y="314" fill="#7BC47F">running</text>
+    <text x="305.2" y="314" fill="#5C6068">on 127.0.0.1:11434</text>
+    <text x="464.8" y="314" fill="#5C6068">·</text>
+    <text x="481.6" y="314" fill="#E6E6E6">3 models</text>
+    <text x="162.4" y="334" fill="#E6E6E6">qwen3.6</text>
+    <text x="305.2" y="334" fill="#E6E6E6">36.0B</text>
+    <text x="364.0" y="334" fill="#E6E6E6">Q4_K_M</text>
+    <text x="431.2" y="334" fill="#E6E6E6">22.1 GiB</text>
+    <text x="515.2" y="334" fill="#E6E6E6">256k</text>
+    <text x="565.6" y="334" fill="#5C6068">tools thinking</text>
+    <text x="162.4" y="354" fill="#E6E6E6">qwen3-coder:30b</text>
+    <text x="305.2" y="354" fill="#E6E6E6">30.5B</text>
+    <text x="364.0" y="354" fill="#E6E6E6">Q4_K_M</text>
+    <text x="431.2" y="354" fill="#E6E6E6">17.3 GiB</text>
+    <text x="515.2" y="354" fill="#E6E6E6">256k</text>
+    <text x="565.6" y="354" fill="#5C6068">tools</text>
+    <text x="162.4" y="374" fill="#E6E6E6">gemma-chat:2b</text>
+    <text x="313.6" y="374" fill="#E6E6E6">2.6B</text>
+    <text x="364.0" y="374" fill="#E6E6E6">Q8_0</text>
+    <text x="439.6" y="374" fill="#E6E6E6">2.6 GiB</text>
+    <text x="532.0" y="374" fill="#E6E6E6">8k</text>
+    <text x="565.6" y="374" fill="#E0B661">no tool calling</text>
+    <text x="44.8" y="394" fill="#8A8F98">LM Studio</text>
+    <text x="162.4" y="394" fill="#5C6068">not installed</text>
+    <text x="44.8" y="414" fill="#8A8F98">llama.cpp</text>
+    <text x="162.4" y="414" fill="#E6E6E6">b6123</text>
+    <text x="212.8" y="414" fill="#5C6068">·</text>
+    <text x="229.6" y="414" fill="#E6E6E6">installed</text>
+    <text x="313.6" y="414" fill="#5C6068">·</text>
+    <text x="330.4" y="414" fill="#5C6068">no models</text>
+    <text x="28.0" y="454" fill="#E6E6E6" font-weight="600">Claude Code setup</text>
+    <text x="44.8" y="474" fill="#8A8F98">Projects</text>
+    <text x="162.4" y="474" fill="#E6E6E6">2 projects</text>
+    <text x="44.8" y="494" fill="#8A8F98">Instructions</text>
+    <text x="162.4" y="494" fill="#E6E6E6">4 files</text>
+    <text x="229.6" y="494" fill="#5C6068">·</text>
+    <text x="246.4" y="494" fill="#E6E6E6">242 lines</text>
+    <text x="162.4" y="514" fill="#5C6068">2 CLAUDE.md</text>
+    <text x="263.2" y="514" fill="#5C6068">·</text>
+    <text x="280.0" y="514" fill="#5C6068">1 AGENTS.md</text>
+    <text x="380.8" y="514" fill="#5C6068">·</text>
+    <text x="397.6" y="514" fill="#5C6068">1 rule</text>
+    <text x="44.8" y="534" fill="#8A8F98">MCP servers</text>
+    <text x="162.4" y="534" fill="#E6E6E6">4</text>
+    <text x="179.2" y="534" fill="#5C6068">·</text>
+    <text x="196.0" y="534" fill="#5C6068">2 http</text>
+    <text x="254.8" y="534" fill="#5C6068">·</text>
+    <text x="271.6" y="534" fill="#E6E6E6">2 stdio</text>
+    <text x="162.4" y="554" fill="#E6E6E6">chrome-devtools</text>
+    <text x="305.2" y="554" fill="#E6E6E6">stdio</text>
+    <text x="364.0" y="554" fill="#5C6068">user</text>
+    <text x="162.4" y="574" fill="#E6E6E6">stitch</text>
+    <text x="305.2" y="574" fill="#E6E6E6">http</text>
+    <text x="364.0" y="574" fill="#5C6068">user</text>
+    <text x="162.4" y="594" fill="#E6E6E6">cloudflare</text>
+    <text x="305.2" y="594" fill="#E6E6E6">http</text>
+    <text x="364.0" y="594" fill="#5C6068">plugin cloudflare</text>
+    <text x="162.4" y="614" fill="#E6E6E6">railway</text>
+    <text x="305.2" y="614" fill="#E6E6E6">stdio</text>
+    <text x="364.0" y="614" fill="#5C6068">local app</text>
+    <text x="44.8" y="634" fill="#8A8F98">Hooks</text>
+    <text x="162.4" y="634" fill="#E6E6E6">4 handlers on 4 events</text>
+    <text x="162.4" y="654" fill="#5C6068">PostToolUse</text>
+    <text x="263.2" y="654" fill="#5C6068">·</text>
+    <text x="280.0" y="654" fill="#5C6068">SessionStart</text>
+    <text x="389.2" y="654" fill="#5C6068">·</text>
+    <text x="406.0" y="654" fill="#5C6068">Stop</text>
+    <text x="448.0" y="654" fill="#5C6068">·</text>
+    <text x="464.8" y="654" fill="#5C6068">UserPromptSubmit</text>
+    <text x="44.8" y="674" fill="#8A8F98">Extensions</text>
+    <text x="162.4" y="674" fill="#E6E6E6">1 command</text>
+    <text x="246.4" y="674" fill="#5C6068">·</text>
+    <text x="263.2" y="674" fill="#E6E6E6">0 subagents</text>
+    <text x="364.0" y="674" fill="#5C6068">·</text>
+    <text x="380.8" y="674" fill="#E6E6E6">2 skills</text>
+    <text x="44.8" y="694" fill="#8A8F98">Plugins</text>
+    <text x="162.4" y="694" fill="#E6E6E6">2 plugins</text>
+    <text x="238.0" y="694" fill="#5C6068">, 1 enabled</text>
+    <text x="44.8" y="714" fill="#8A8F98">Permissions</text>
+    <text x="162.4" y="714" fill="#E6E6E6">17 allow</text>
+    <text x="238.0" y="714" fill="#5C6068">·</text>
+    <text x="254.8" y="714" fill="#E6E6E6">2 deny</text>
+    <text x="313.6" y="714" fill="#5C6068">·</text>
+    <text x="330.4" y="714" fill="#E6E6E6">1 ask</text>
+    <text x="28.0" y="754" fill="#E6E6E6" font-weight="600">Session history</text>
+    <text x="44.8" y="774" fill="#8A8F98">Sessions</text>
+    <text x="162.4" y="774" fill="#E6E6E6">427</text>
+    <text x="196.0" y="774" fill="#5C6068">·</text>
+    <text x="212.8" y="774" fill="#E6E6E6">51,041 turns</text>
+    <text x="322.0" y="774" fill="#5C6068">·</text>
+    <text x="338.8" y="774" fill="#E6E6E6">8 Mar – 4 Nov 2026</text>
+    <text x="44.8" y="794" fill="#8A8F98">Peak context</text>
+    <text x="162.4" y="794" fill="#E6E6E6">p50 190k</text>
+    <text x="238.0" y="794" fill="#5C6068">·</text>
+    <text x="254.8" y="794" fill="#E6E6E6">p90</text>
+    <text x="288.4" y="794" fill="#6FC2B0">560k</text>
+    <text x="330.4" y="794" fill="#5C6068">·</text>
+    <text x="347.2" y="794" fill="#E6E6E6">max 943k</text>
+    <text x="44.8" y="814" fill="#8A8F98">Fits within</text>
+    <text x="162.4" y="814" fill="#5C6068">32k</text>
+    <text x="204.4" y="814" fill="#5C6068">64k</text>
+    <text x="246.4" y="814" fill="#5C6068">128k</text>
+    <text x="296.8" y="814" fill="#5C6068">256k</text>
+    <text x="364.0" y="814" fill="#5C6068">1M</text>
+    <text x="162.4" y="834" fill="#E5786D">&lt;1%</text>
+    <text x="212.8" y="834" fill="#E5786D">1%</text>
+    <text x="254.8" y="834" fill="#E5786D">33%</text>
+    <text x="305.2" y="834" fill="#E0B661">61%</text>
+    <text x="347.2" y="834" fill="#7BC47F">100%</text>
+    <text x="44.8" y="854" fill="#8A8F98">Compaction</text>
+    <text x="162.4" y="854" fill="#E6E6E6">3% of sessions</text>
+    <text x="288.4" y="854" fill="#5C6068">·</text>
+    <text x="305.2" y="854" fill="#5C6068">16 compactions, 13 automatic</text>
+    <text x="44.8" y="874" fill="#8A8F98">Subagents</text>
+    <text x="162.4" y="874" fill="#E6E6E6">31% of sessions</text>
+    <text x="296.8" y="874" fill="#5C6068">·</text>
+    <text x="313.6" y="874" fill="#5C6068">789 calls</text>
+    <text x="44.8" y="894" fill="#8A8F98">Tools</text>
+    <text x="162.4" y="894" fill="#E6E6E6">Bash</text>
+    <text x="204.4" y="894" fill="#5C6068">35,081</text>
+    <text x="263.2" y="894" fill="#5C6068">·</text>
+    <text x="280.0" y="894" fill="#E6E6E6">Edit</text>
+    <text x="322.0" y="894" fill="#5C6068">3,790</text>
+    <text x="372.4" y="894" fill="#5C6068">·</text>
+    <text x="389.2" y="894" fill="#E6E6E6">Read</text>
+    <text x="431.2" y="894" fill="#5C6068">3,040</text>
+    <text x="481.6" y="894" fill="#5C6068">·</text>
+    <text x="498.4" y="894" fill="#E6E6E6">Write</text>
+    <text x="548.8" y="894" fill="#5C6068">2,021</text>
+    <text x="599.2" y="894" fill="#5C6068">· +5 more</text>
+    <text x="44.8" y="914" fill="#8A8F98">MCP calls</text>
+    <text x="162.4" y="914" fill="#E6E6E6">Claude_Browser</text>
+    <text x="288.4" y="914" fill="#5C6068">4,741</text>
+    <text x="338.8" y="914" fill="#5C6068">·</text>
+    <text x="355.6" y="914" fill="#E6E6E6">claude-in-chrome</text>
+    <text x="498.4" y="914" fill="#5C6068">2,941</text>
+    <text x="548.8" y="914" fill="#5C6068">·</text>
+    <text x="565.6" y="914" fill="#E6E6E6">github</text>
+    <text x="624.4" y="914" fill="#5C6068">65</text>
+    <text x="44.8" y="934" fill="#8A8F98">Languages</text>
+    <text x="162.4" y="934" fill="#E6E6E6">TypeScript</text>
+    <text x="254.8" y="934" fill="#5C6068">47%</text>
+    <text x="288.4" y="934" fill="#5C6068">·</text>
+    <text x="305.2" y="934" fill="#E6E6E6">PHP</text>
+    <text x="338.8" y="934" fill="#5C6068">28%</text>
+    <text x="372.4" y="934" fill="#5C6068">·</text>
+    <text x="389.2" y="934" fill="#E6E6E6">Markdown</text>
+    <text x="464.8" y="934" fill="#5C6068">17%</text>
+    <text x="498.4" y="934" fill="#5C6068">·</text>
+    <text x="515.2" y="934" fill="#E6E6E6">CSS</text>
+    <text x="548.8" y="934" fill="#5C6068">8%</text>
+    <text x="44.8" y="954" fill="#8A8F98">Models</text>
+    <text x="162.4" y="954" fill="#E6E6E6">claude-opus-5-5</text>
+    <text x="296.8" y="954" fill="#5C6068">75%</text>
+    <text x="330.4" y="954" fill="#5C6068">·</text>
+    <text x="347.2" y="954" fill="#E6E6E6">claude-fable-5</text>
+    <text x="473.2" y="954" fill="#5C6068">25%</text>
+    <text x="44.8" y="974" fill="#8A8F98">Repos</text>
+    <text x="162.4" y="974" fill="#E6E6E6">~/Code/app</text>
+    <text x="322.0" y="974" fill="#E6E6E6">336 sessions</text>
+    <text x="439.6" y="974" fill="#5C6068">p90</text>
+    <text x="473.2" y="974" fill="#E6E6E6">560k</text>
+    <text x="162.4" y="994" fill="#E6E6E6">~/Code/site</text>
+    <text x="330.4" y="994" fill="#E6E6E6">61 sessions</text>
+    <text x="439.6" y="994" fill="#5C6068">p90</text>
+    <text x="473.2" y="994" fill="#E6E6E6">539k</text>
+    <text x="162.4" y="1014" fill="#E6E6E6">/srv/shared/tools</text>
+    <text x="338.8" y="1014" fill="#E6E6E6">3 sessions</text>
+    <text x="448.0" y="1014" fill="#5C6068">p90</text>
+    <text x="481.6" y="1014" fill="#E6E6E6">41k</text>
+  </g>
+</svg>

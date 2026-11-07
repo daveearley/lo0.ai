@@ -1,0 +1,61 @@
+name: site
+
+# The site serves install.sh and install.ps1, which ci.yml tests against the
+# release binaries, so main deploys only after ci.yml passes on that commit.
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'internal/**'
+      - 'cmd/lo0wasm/**'
+      - '.github/workflows/site.yml'
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    # workflow_run carries secrets, so deploy only for a push to this
+    # repository, never for a pull request from a fork whose branch is main.
+    if: >-
+      github.event_name == 'pull_request' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: site/.nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+      - name: Build lo0 for the hardware page
+        run: make wasm
+        working-directory: .
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Cloudflare
+        if: github.event_name == 'workflow_run'
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

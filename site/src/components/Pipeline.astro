@@ -1,0 +1,124 @@
+---
+const steps = [
+  { name: 'Scan', command: 'lo0 scan', writes: false, text: 'Reads your hardware, local runtimes, and your Claude Code and Codex setups and history.' },
+  { name: 'Match', command: 'lo0 match', writes: false, text: 'Works out which open-weight models fit your memory, your context and your tools, and how fast they run here.' },
+  { name: 'Try', command: 'lo0 try', writes: true, text: 'Prepares a model in Ollama and starts Claude Code, OpenCode or Codex on it for one session. Their settings stay as they are.' },
+  { name: 'Keep', command: 'lo0 migrate', writes: true, text: 'Makes it permanent: a claude-local command beside claude, or OpenCode or Codex pointed at the model. Every file it replaces is backed up.' },
+  { name: 'Undo', command: 'lo0 migrate --undo', writes: true, text: 'Puts back everything migrate changed, from the journal it kept as it went.' },
+];
+---
+<ol class="pipeline" role="list">
+  {steps.map((s, i) => (
+    <li class="step" style={`--i:${i}`}>
+      <span class="node" aria-hidden="true"></span>
+      <div class="body">
+        <h3><span class="n tnum">{String(i + 1).padStart(2, '0')}</span>{s.name}</h3>
+        <p>{s.text}</p>
+        <p class="meta">
+          <code class="cmd">{s.command}</code>
+          <span class:list={['rw', { writes: s.writes }]}>{s.writes ? 'Changes, once you confirm' : 'Read-only'}</span>
+        </p>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    position: relative;
+    gap: 0;
+  }
+
+  .step {
+    position: relative;
+    padding-right: 1.5rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0.4375rem;
+      left: 0;
+      right: 0;
+      border-top: 2px solid var(--accent);
+      transform-origin: left;
+
+      @supports (animation-timeline: view()) {
+        animation: draw linear both;
+        animation-timeline: view();
+        animation-range: entry calc(40% + var(--i) * 8%) cover calc(35% + var(--i) * 6%);
+      }
+    }
+
+    &:last-child::before { right: auto; width: 0; }
+  }
+
+  @keyframes draw { from { scale: 0 1; } }
+
+  .node {
+    position: relative;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: var(--step-1);
+    margin-bottom: 0.5rem;
+  }
+
+  .n { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400; color: var(--ink-3); letter-spacing: 0; }
+
+  .body > p:not(.meta) { color: var(--ink-2); font-size: 0.9375rem; line-height: 1.55; }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    flex-direction: column;
+    align-items: start;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+  }
+
+  .meta .cmd { color: var(--ink); }
+  .rw.writes { color: var(--warn); }
+
+  @media (width < 56rem) {
+    .pipeline { grid-template-columns: 1fr; gap: 0; }
+    .step {
+      display: grid;
+      grid-template-columns: 1rem minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 0 0 2.25rem;
+
+      &::before {
+        top: 0.5rem;
+        bottom: -0.5rem;
+        left: calc(0.5rem - 1px);
+        right: auto;
+        border-top: 0;
+        border-left: 2px solid var(--accent);
+        transform-origin: top;
+      }
+      &:last-child { padding-bottom: 0; }
+      &:last-child::before { display: none; }
+    }
+    @keyframes draw { from { scale: 1 0; } }
+    .node { margin: 0.25rem 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step::before { animation: none; }
+  }
+</style>

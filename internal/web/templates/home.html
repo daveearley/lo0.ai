@@ -1,0 +1,27 @@
+{{define "content"}}{{with .Content}}
+<section class="hero tone-{{.Tone}}">
+<p class="eyebrow">{{.Premise}}</p>
+{{if .Share}}<h1 class="answer"><span class="figure">{{.Share}}</span><span class="phrase">{{sharePhrase}}</span></h1>
+{{if .HasCurve}}{{template "curve" .Curve}}{{end}}
+<p class="legend">{{if .Level}}<a class="level tone-{{.LevelTone}}" href="/claude">{{.Level}}</a><span class="sep">·</span>{{end}}{{.Fit}}{{with .Rest}}<span class="sep">·</span>{{.}}{{end}}</p>
+{{else}}<h1 class="answer"><span class="phrase">{{.Verdict}}</span></h1>{{end}}
+</section>
+
+{{if or .Race .Routes}}<div class="pair">
+{{with .Race}}<section><h2 class="label">{{replyLabel}}</h2>{{template "race" .}}</section>{{end}}
+{{if .Routes}}<section><h2 class="label">{{routesLabel}}</h2>
+<ul class="routes" role="list">{{range .Routes}}<li{{if .Local}} class="local"{{end}}><code>{{.Command}}</code><span class="wire" aria-hidden="true"></span><span>{{.Model}}</span></li>{{end}}</ul>
+{{with .Kept}}<p class="note">{{.}}</p>{{end}}{{with .LastTry}}<p class="note">{{.}}</p>{{end}}
+</section>{{end}}
+</div>{{end}}
+
+<section class="next">
+<h2 class="label">{{nextLabel}}</h2>
+<p class="lead">{{.Headline}}</p>
+<ol class="steps" role="list">{{range .Steps}}
+<li><div class="what"><span class="title">{{.Label}}</span>{{with .Note}}<span class="note">{{.}}</span>{{end}}</div>{{if .Command}}{{template "command" .Command}}{{else if .Href}}<a class="go" href="{{.Href}}">{{.Link}}<span aria-hidden="true"> →</span></a>{{end}}</li>{{end}}
+</ol>
+</section>
+
+{{template "facts" .Facts}}
+{{end}}{{end}}

@@ -1,0 +1,73 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../site';
+---
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div class="brand">
+      <Logo class="mark" animate={false} />
+      <p>
+        <code>lo0</code> is the loopback interface, the one network device that only talks to its own
+        machine. Anything sent to it comes straight back. Say it “L-O-zero” (ell-oh-zero), or
+        “loo” if you’re so inclined.
+      </p>
+    </div>
+
+    <nav aria-label="Footer">
+      <ul role="list">
+        <li><a href="/install">Install</a></li>
+        <li><a href="/guides/claude-code-local-model">Run Claude Code on a local model</a></li>
+        <li><a href="/glossary">Local AI glossary</a></li>
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#models">Model catalogue</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href={site.repo}>Source on GitHub</a></li>
+        <li><a href={`${site.repo}/blob/main/AGENTS.md`}>Contributing</a></li>
+      </ul>
+    </nav>
+
+    <p class="legal">
+      Free software under the <a href={`${site.repo}/blob/main/LICENSE`}>GNU AGPL v3.0</a>.
+      © {site.year} {site.author}.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem) 2.5rem;
+    background: var(--bg-sunk);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2.5rem 4rem;
+  }
+
+  .brand {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 30rem;
+    & :global(.mark) { width: 4rem; color: var(--ink); }
+  }
+
+  ul { display: grid; gap: 0.55rem; justify-self: end; min-width: 12rem; }
+  ul a { text-decoration: none; &:hover { color: var(--ink); } }
+
+  .legal {
+    grid-column: 1 / -1;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  @media (width < 40rem) {
+    .grid { grid-template-columns: 1fr; }
+    ul { justify-self: start; }
+  }
+</style>

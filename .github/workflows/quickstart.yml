@@ -1,0 +1,81 @@
+name: quickstart
+
+# Follows the README's quick start exactly as a new user would, against the
+# live site and the published release: the install one-liner for each
+# operating system and go install through the lo0.ai import path. ci.yml
+# tests the same installers against a local build; this catches what only
+# the real thing can, such as the site serving the wrong file or a release
+# missing a platform.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Release tag to install, such as v0.3.0. Empty means the newest release.
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag to install, such as v0.3.0. Empty means the newest release.
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: install (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux/amd64, os: ubuntu-latest }
+          - { platform: linux/arm64, os: ubuntu-24.04-arm }
+          - { platform: darwin/arm64, os: macos-latest }
+          - { platform: darwin/amd64, os: macos-15-intel }
+          - { platform: windows/amd64, os: windows-latest }
+          - { platform: windows/arm64, os: windows-11-arm }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      LO0_VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Find the release to expect
+        id: want
+        shell: bash
+        run: |
+          tag=${LO0_VERSION:-$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)}
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: curl -fsSL https://lo0.ai/install.sh | sh
+        if: runner.os != 'Windows'
+        run: |
+          curl -fsSL https://lo0.ai/install.sh | sh
+          test "$("$HOME/.local/bin/lo0" version)" = "lo0 ${{ steps.want.outputs.tag }}"
+          LO0_OFFLINE=1 "$HOME/.local/bin/lo0" match
+
+      - name: irm https://lo0.ai/install.ps1 | iex
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          irm https://lo0.ai/install.ps1 | iex
+          $lo0 = Join-Path $env:LOCALAPPDATA 'Programs\lo0\lo0.exe'
+          $got = & $lo0 version
+          if ($got -ne 'lo0 ${{ steps.want.outputs.tag }}') { throw "installed $got, want lo0 ${{ steps.want.outputs.tag }}" }
+          $env:LO0_OFFLINE = '1'
+          & $lo0 match
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: stable
+          cache: false
+      - name: go install lo0.ai/lo0/cmd/lo0
+        shell: bash
+        run: |
+          GOBIN="$RUNNER_TEMP/gobin" go install "lo0.ai/lo0/cmd/lo0@${{ steps.want.outputs.tag }}"
+          got=$("$RUNNER_TEMP/gobin/lo0" version)
+          test "$got" = "lo0 ${{ steps.want.outputs.tag }}" || { echo "go install gave $got"; exit 1; }

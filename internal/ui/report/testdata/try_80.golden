@@ -1,0 +1,40 @@
+lo0 try
+
+Plan
+  Harness       Claude Code on a local model
+  Model         Qwen3-Coder-30B-A3B · Q4_K_M · 64k window
+  Background    Qwen3.5-2B · Q8_0 · 64k window
+  Runtime       Ollama · http://127.0.0.1:11434
+  Served as     lo0/qwen3-coder-30b-a3b:64k
+                lo0/qwen3.5-2b:64k
+
+Steps
+  ✓  Download Qwen3-Coder-30B-A3B at Q4_K_M
+  1  Create lo0/qwen3-coder-30b-a3b:64k with a 64k context window
+     num_ctx 65,536
+  2  Download Qwen3.5-2B at Q8_0                                         2.3 GiB
+     ollama pull hf.co/unsloth/Qwen3.5-2B-GGUF:Q8_0
+  3  Create lo0/qwen3.5-2b:64k with a 64k context window
+     num_ctx 65,536
+  4  Check that Ollama answers as lo0/qwen3-coder-30b-a3b:64k
+     POST http://127.0.0.1:11434/v1/messages
+
+Session
+  Start claude once the steps are done
+    ANTHROPIC_BASE_URL=http://127.0.0.1:11434
+    ANTHROPIC_AUTH_TOKEN=ollama
+    ANTHROPIC_MODEL=lo0/qwen3-coder-30b-a3b:64k
+    ANTHROPIC_DEFAULT_OPUS_MODEL=lo0/qwen3-coder-30b-a3b:64k
+    ANTHROPIC_DEFAULT_SONNET_MODEL=lo0/qwen3-coder-30b-a3b:64k
+    ANTHROPIC_DEFAULT_FABLE_MODEL=lo0/qwen3-coder-30b-a3b:64k
+    ANTHROPIC_DEFAULT_HAIKU_MODEL=lo0/qwen3.5-2b:64k
+    CLAUDE_CODE_MAX_CONTEXT_TOKENS=65536
+    CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
+    CLAUDE_CODE_ATTRIBUTION_HEADER=0
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+    ANTHROPIC_API_KEY unset
+    Set for this session only; your Claude Code settings are not changed.
+
+Then
+  - To keep Qwen3-Coder-30B-A3B in Claude Code on a local model, run
+    lo0 migrate --to claude-code --model qwen3-coder-30b-a3b --runtime ollama.

@@ -1,0 +1,36 @@
+  lo0                                                                Apple M5 Pro · 48 GiB for models · Ollama running
+  
+  ▌ 1 Home            Local models for your Claude Code and Codex work                                                
+    2 Your sessions                                                                                                   
+    3 Models          62% of your sessions can run on this machine today · Ready with trade-offs                      
+    4 Agents          ███████████████████████████████████████████████████████████▌░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    5 This machine    31 of 50 sessions fit in Coder-30B-A3B’s 256k window · 19 would compact                         
+                                                                                                                      
+                      HOW LONG A REPLY TAKES                                                 WHERE YOUR COMMANDS GO   
+                      Opus 5.5 · Claude Code  ██▊                           6s               claude ──▶ Claude        
+                      GPT-5.5 · Codex         ████▎                        10s               no local model set up yet
+                      Coder-30B-A3B           ████████████████████████     54s  estimated                             
+                                                                                                                      
+                      WHAT TO DO NEXT                                                                                 
+                      Coder-30B-A3B is already downloaded and fits 62% of your sessions.                              
+                                                                                                                      
+                      › Try Coder-30B-A3B in Claude Code for one session    nothing in Claude Code changes            
+                        Keep it: set it up in Claude Code for good          undo any time                             
+                        Compare it with General-27B                         10 tok/s, needs 25.2 GiB                  
+                        Browse every model that fits, and why               3 models fit · 1 downloaded               
+                                                                                                                      
+                      THIS MACHINE                     YOUR SESSIONS                                                  
+                      2 models · 20 GiB                50 sessions in 2 months                                        
+                      Ollama running                   $682 at API prices                                             
+                                                       $431 in the last 30 days                                       
+                                                       across Claude Code and Codex                                   
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+  
+  ↑↓ choose   enter go   tab next screen   ctrl+k commands   ? keys

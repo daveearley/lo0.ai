@@ -1,0 +1,7 @@
+{{define "content"}}<section class="scanning">
+<h1>Reading this machine</h1>
+<ol class="stages" role="list">{{range .Stages}}
+<li data-stage="{{.Stage}}" data-state="{{.State}}"><span class="glyph" aria-hidden="true"></span><span class="stage">{{.Label}}</span><span class="note">{{.Note}}</span></li>{{end}}
+</ol>
+<p class="aside">lo0 reads your hardware, local runtimes and coding history. It changes nothing, and none of it leaves this machine.</p>
+</section>{{end}}

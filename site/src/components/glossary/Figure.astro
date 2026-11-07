@@ -1,0 +1,95 @@
+---
+/**
+ * The frame every glossary figure sits in, with the segmented radio
+ * controls they share. Controls are radios so each figure works without
+ * JavaScript.
+ */
+interface Props {
+  title: string;
+  /** The term the figure illustrates, for the anchor and the label. */
+  for: string;
+}
+const { title, for: term } = Astro.props;
+---
+<figure class="fig" id={`fig-${term}`} aria-labelledby={`fig-${term}-title`}>
+  <figcaption class="head" id={`fig-${term}-title`}>{title}</figcaption>
+  <slot />
+  {Astro.slots.has('note') && <p class="note"><slot name="note" /></p>}
+</figure>
+
+<style>
+  .fig {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+    margin-block: 0.5rem 2.5rem;
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2rem);
+    border: 1px solid var(--rule);
+    border-radius: calc(var(--radius) + 4px);
+    background: var(--surface);
+  }
+
+  .head {
+    font-weight: 600;
+    font-size: var(--step-1);
+    letter-spacing: -0.012em;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+
+  .note {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+    max-width: 64ch;
+    line-height: 1.55;
+  }
+
+  .fig :global(.controls) { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; }
+
+  .fig :global(fieldset) {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+    max-width: 100%;
+
+    & :global(legend) {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .fig :global(.opts) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule);
+
+    & :global(label) { position: relative; }
+    & :global(input) { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+    & :global(span) {
+      display: block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--ink-2);
+      white-space: nowrap;
+      transition: background-color 180ms, color 180ms, box-shadow 180ms;
+    }
+    & :global(input:checked + span) {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 1px 2px oklch(20% 0.01 260 / 0.12), 0 0 0 1px var(--rule-strong);
+    }
+    & :global(label:hover input:not(:checked) + span) { color: var(--ink); }
+    & :global(input:focus-visible + span) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  }
+
+  @media (width < 34rem) {
+    .fig :global(.opts) { border-radius: 14px; }
+  }
+</style>

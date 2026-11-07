@@ -1,0 +1,207 @@
+---
+import { budget } from '../data/example';
+
+const pct = (gib: number) => ((gib / budget.usable) * 100).toFixed(3);
+const sel = (c: (typeof budget.combos)[number]) =>
+  `.budget:has(input[value='${c.quant}']:checked):has(input[value='${c.cache}']:checked)`;
+
+// Each combination of controls selects one precomputed budget.
+const css = budget.combos
+  .map(
+    (c) =>
+      `${sel(c)}{--wt:${pct(c.weights)}%;--kv:${pct(c.kv)}%;--rt:${pct(c.runtime)}%;--win:${c.windowK};--fit:${c.fits}}` +
+      `${sel(c)} [data-c='${c.id}']{display:inline}`,
+  )
+  .join('');
+const gib = (n: number) => n.toFixed(1);
+---
+<div class="budget">
+  <style is:inline set:html={css}></style>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Weights</legend>
+      <div class="opts">
+        {budget.quants.map((q) => (
+          <label><input type="radio" name="b-quant" value={q.id} checked={q.id === 'q4'} /><span>{q.label}</span></label>
+        ))}
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>KV cache</legend>
+      <div class="opts">
+        {budget.caches.map((c) => (
+          <label><input type="radio" name="b-cache" value={c.id} checked={c.id === 'q8kv'} /><span>{c.label}</span></label>
+        ))}
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="meter" aria-hidden="true">
+    <div class="track">
+      <span class="seg wt"></span>
+      <span class="seg kv"></span>
+      <span class="seg rt"></span>
+    </div>
+    <div class="scale"><span>0</span><span>{budget.usable} GiB usable by models</span></div>
+  </div>
+
+  <dl class="legend">
+    <div><dt><i class="sw wt"></i>Weights</dt><dd class="tnum">{budget.combos.map((c) => <span data-c={c.id}>{gib(c.weights)}</span>)} GiB</dd></div>
+    <div><dt><i class="sw kv"></i>KV cache</dt><dd class="tnum">{budget.combos.map((c) => <span data-c={c.id}>{gib(c.kv)}</span>)} GiB</dd></div>
+    <div><dt><i class="sw rt"></i>Runtime</dt><dd class="tnum">{gib(budget.runtime)} GiB</dd></div>
+    <div><dt><i class="sw free"></i>Left over</dt><dd class="tnum">{budget.combos.map((c) => <span data-c={c.id}>{gib(Math.max(0, budget.usable - c.total))}</span>)} GiB</dd></div>
+  </dl>
+
+  <dl class="result">
+    <div>
+      <dt>Window</dt>
+      <dd><span class="count win" aria-hidden="true"></span>{budget.combos.map((c) => <span class="visually-hidden" data-c={c.id}>{c.windowK}k</span>)} <small>tokens</small></dd>
+    </div>
+    <div>
+      <dt>Sessions that fit</dt>
+      <dd><span class="count fit" aria-hidden="true"></span>{budget.combos.map((c) => <span class="visually-hidden" data-c={c.id}>{c.fits}%</span>)}</dd>
+    </div>
+    <div>
+      <dt>Quality kept</dt>
+      <dd>{budget.combos.map((c) => <span data-c={c.id}>~{c.quality}%</span>)}</dd>
+    </div>
+  </dl>
+
+  <p class="caption">
+    {budget.model} on the example machine. The window is whatever the cache can hold once the
+    weights are in, up to the model’s 256k limit.
+  </p>
+</div>
+
+<style>
+  @property --wt { syntax: '<percentage>'; inherits: true; initial-value: 0%; }
+  @property --kv { syntax: '<percentage>'; inherits: true; initial-value: 0%; }
+  @property --rt { syntax: '<percentage>'; inherits: true; initial-value: 0%; }
+  @property --win { syntax: '<integer>'; inherits: true; initial-value: 0; }
+  @property --fit { syntax: '<integer>'; inherits: true; initial-value: 0; }
+
+  .budget {
+    display: grid;
+    gap: 1.75rem;
+    transition: --wt 600ms var(--ease-in-out), --kv 600ms var(--ease-in-out), --rt 600ms var(--ease-in-out),
+      --win 600ms var(--ease-in-out), --fit 600ms var(--ease-in-out);
+  }
+
+  [data-c] { display: none; }
+  .visually-hidden[data-c] { display: none; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+
+    & legend {
+      font-family: var(--font-mono);
+      font-size: var(--step--1);
+      color: var(--ink-3);
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  .opts {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule);
+
+    & label { position: relative; }
+    & input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+    & span {
+      display: block;
+      padding: 0.4rem 0.95rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      transition: background-color 180ms, color 180ms, box-shadow 180ms;
+    }
+    & input:checked + span {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 1px 2px oklch(20% 0.01 260 / 0.12), 0 0 0 1px var(--rule-strong);
+    }
+    & label:hover input:not(:checked) + span { color: var(--ink); }
+    & input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  }
+
+  .track {
+    display: flex;
+    height: 2.75rem;
+    padding: 3px;
+    gap: 3px;
+    border-radius: 8px;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 calc(100% / 12 - 1px), var(--rule) calc(100% / 12 - 1px) calc(100% / 12)),
+      var(--bg-sunk);
+    border: 1px solid var(--rule);
+  }
+
+  .seg { border-radius: 5px; min-width: 0; }
+  .seg.wt { width: var(--wt); background: var(--ink); }
+  .seg.kv { width: var(--kv); background: var(--accent); }
+  .seg.rt { width: var(--rt); background: var(--ink-3); }
+
+  .scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    font-size: 0.9375rem;
+
+    & dt { display: flex; align-items: center; gap: 0.5rem; color: var(--ink-2); }
+    & dd { font-family: var(--font-mono); font-size: 0.9375rem; padding-left: 1.25rem; }
+  }
+
+  .sw { width: 0.75rem; height: 0.75rem; border-radius: 3px; flex: none; }
+  .sw.wt { background: var(--ink); }
+  .sw.kv { background: var(--accent); }
+  .sw.rt { background: var(--ink-3); }
+  .sw.free { background: var(--bg-sunk); box-shadow: inset 0 0 0 1px var(--rule-strong); }
+
+  .result {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+    padding-top: 1.5rem;
+    gap: 1rem;
+
+    & dt { font-size: var(--step--1); color: var(--ink-3); font-family: var(--font-mono); }
+    & dd {
+      font-size: var(--step-3);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      font-variation-settings: 'wdth' 88;
+      font-variant-numeric: tabular-nums;
+    }
+    & small { font-size: 0.875rem; font-weight: 400; letter-spacing: 0; color: var(--ink-3); }
+  }
+
+  .count.win { counter-reset: win var(--win); &::before { content: counter(win) 'k'; } }
+  .count.fit { counter-reset: fit var(--fit); color: var(--accent); &::before { content: counter(fit) '%'; } }
+
+  .caption { font-size: var(--step--1); color: var(--ink-3); max-width: 60ch; }
+
+  @media (width < 34rem) {
+    .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .result { grid-template-columns: 1fr 1fr; }
+    .result > div:last-child { grid-column: 1 / -1; }
+  }
+</style>

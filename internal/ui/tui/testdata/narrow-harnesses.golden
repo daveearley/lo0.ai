@@ -1,0 +1,24 @@
+  lo0                        Apple M5 Pro · 48 GiB for models · Ollama running
+    1 Home    2 Your sessions    3 Models  ▌ 4 Agents    5 This machine
+  
+  What carries over to each coding agent?
+  
+  ▌ Claude Code on a local model                   90% carries over
+    OpenCode                                       50% carries over
+  
+  WHAT MOVES WITH YOU TO CLAUDE CODE ON A LOCAL MODEL
+  Instructions
+  › ~/.claude/CLAUDE.md                                            works as is
+  
+  MCP servers
+    github                                                         works as is
+  
+  App tools
+    Claude_Browser                                           300 calls  partly
+  
+  Hooks
+    PreToolUse                                                     works as is
+    Notification                                                   works as is
+  
+  
+  ←→ harness   ↑↓ item   enter details   / search   ctrl+k commands   ? keys

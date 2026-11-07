@@ -1,0 +1,95 @@
+---
+import { carryOver, type Carry } from '../data/example';
+
+const kinds: Carry[] = ['as is', 'converted', 'partly', 'lost'];
+const max = Math.max(...carryOver.map((r) => r.counts.reduce((a, [, n]) => a + n, 0)));
+const cls = (k: Carry) => k.replace(' ', '-');
+---
+<div class="carry">
+  <ul class="key" role="list" aria-hidden="true">
+    {kinds.map((k) => <li><i class={cls(k)}></i>{k}</li>)}
+  </ul>
+
+  <dl class="rows">
+    {carryOver.map((r) => (
+      <div class="row">
+        <dt>{r.what}</dt>
+        <dd>
+          <span class="bar" aria-hidden="true" style={`--total:${r.counts.reduce((a, [, n]) => a + n, 0) / max}`}>
+            {r.counts.map(([k, n]) => <span class={cls(k)} style={`flex:${n}`}></span>)}
+          </span>
+          <span class="text">
+            {r.counts.map(([k, n], i) => (
+              <>{i > 0 && <span class="sep"> · </span>}<span class:list={['c', cls(k)]}><b class="tnum">{n}</b> {k}</span></>
+            ))}
+            {r.note && <span class="note"> · {r.note}</span>}
+          </span>
+        </dd>
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .carry { display: grid; gap: 1.25rem; }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-3);
+
+    & li { display: flex; align-items: center; gap: 0.45rem; }
+    & i { width: 0.7rem; height: 0.7rem; border-radius: 2px; }
+  }
+
+  .as-is { background: var(--accent); }
+  .converted { background: color-mix(in oklch, var(--accent) 45%, var(--bg)); }
+  .partly { background: var(--warn); }
+  .lost { background: var(--loss); }
+
+  .rows { display: grid; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+
+    &:last-child { border-bottom: 1px solid var(--rule); }
+  }
+
+  dt { font-weight: 500; }
+
+  dd {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .bar {
+    display: flex;
+    gap: 2px;
+    width: calc(var(--total) * 100%);
+    height: 0.625rem;
+
+    & span { border-radius: 2px; min-width: 3px; }
+  }
+
+  .text { font-size: 0.875rem; color: var(--ink-2); }
+  .c { background: none; }
+  .c b { font-weight: 600; color: var(--ink); font-family: var(--font-mono); font-size: 0.8125rem; }
+  .c.lost { color: var(--loss); }
+  .c.lost b { color: inherit; }
+  .sep, .note { color: var(--ink-3); }
+
+  @media (width < 40rem) {
+    .row { grid-template-columns: 1fr; gap: 0.5rem; }
+    dd { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+</style>

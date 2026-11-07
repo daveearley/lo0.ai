@@ -1,0 +1,24 @@
+  lo0                        Apple M5 Pro · 48 GiB for models · Ollama running
+    1 Home  ▌ 2 Your sessions    3 Models    4 Agents    5 This machine
+  
+  How much of your work can run locally?
+  
+  ████████████████████████████████████████████▍░░░░░░░░░░░░░░░  74 / 100      
+  Ready with trade-offs                                                       
+                                                                              
+  Verdict                                                                     
+    Answer        Ready with trade-offs · readiness 74 of 100                 
+                  A local model can handle many of your sessions, with        
+                  trade-offs.                                                 
+                                                                              
+    Why           - Best fit is Coder-30B-A3B at Q4_K_M, which you already    
+                    have: 62% of your sessions fit in its 256k window, at     
+                    about 10 tokens a second.                                 
+                  - That is very slow: a typical reply takes 54s, against 6s  
+                    with Opus 5.5 in your Claude Code sessions.               
+                  - Your median session peaks at 210k tokens and one in ten   
+                    passes 366k. Sessions above the window would have to      
+                    compact.                                                  
+                  - One in ten of your requests chains 31 or more tool calls  
+  
+  ↑↓ scroll · 0%   tab next screen   ctrl+k commands   ? keys

@@ -1,0 +1,24 @@
+  lo0                        Apple M5 Pro · 48 GiB for models · Ollama running
+  ▌ 1 Home    2 Your sessions    3 Models    4 Agents    5 This machine
+  
+  Local models for your Claude Code and Codex work
+  
+  62% of your sessions can run on this machine today · Ready with trade-offs
+  ███████████████████████████████████████████████▏░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+  31 of 50 sessions fit in Coder-30B-A3B’s 256k window · 19 would compact
+  
+  HOW LONG A REPLY TAKES
+  Opus 5.5 · Claude Code  ███▊                                   6s
+  GPT-5.5 · Codex         █████▉                                10s
+  Coder-30B-A3B           █████████████████████████████████     54s  estimated
+  
+  WHAT TO DO NEXT
+  Coder-30B-A3B is already downloaded and fits 62% of your sessions.
+  
+  › Compare it with General-27B              10 tok/s, needs 25.2 GiB
+    Browse every model that fits, and why    3 models fit · 1 downloaded
+  
+  
+  
+  
+  ↑↓ choose   enter go   tab next screen   ctrl+k commands   ? keys

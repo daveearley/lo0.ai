@@ -1,0 +1,148 @@
+---
+/**
+ * A screen of `lo0 ui`, captured from a real run by scripts/screens and drawn
+ * as text, so it stays sharp at any size and its words can be found.
+ */
+interface Screen {
+  cols: number;
+  rows: number;
+  palette: string[];
+  /** Rows of [text, fg, bg, flags] runs. Colour 0 is the terminal default. */
+  lines: (string | number)[][][];
+}
+
+interface Props {
+  screen: Screen;
+  label: string;
+  command?: string;
+  class?: string;
+}
+
+const { screen, label, command = 'lo0', class: className } = Astro.props;
+const colour = (i: number) => (i === 0 ? undefined : screen.palette[i - 1]);
+
+const style = (fg: number, bg: number, flags: number) => {
+  let f = colour(fg);
+  let b = colour(bg);
+  if (flags & 8) [f, b] = [b ?? 'var(--term-bg)', f ?? 'var(--term-ink)'];
+  const css = [
+    f && `color:${f}`,
+    b && `background:${b}`,
+    flags & 1 && 'font-weight:700',
+    flags & 2 && 'font-style:italic',
+    flags & 4 && 'text-decoration:underline',
+  ].filter(Boolean);
+  return css.length ? css.join(';') : undefined;
+};
+
+// Left blocks in eighths. Fonts leave hairline seams between block glyphs at
+// most sizes, so runs of them are drawn as one bar of the same width.
+const eighths: Record<string, number> = { '█': 8, '▉': 7, '▊': 6, '▋': 5, '▌': 4, '▍': 3, '▎': 2, '▏': 1 };
+type Piece = { text: string } | { bar: number } | { track: number };
+const kind = (c: string) => (c in eighths ? 'block' : c === '░' ? 'shade' : 'text');
+const pieces = (text: string): Piece[] => {
+  const groups: string[] = [];
+  for (const c of text) {
+    const last = groups.at(-1);
+    if (last !== undefined && kind(last[0]) === kind(c)) groups[groups.length - 1] += c;
+    else groups.push(c);
+  }
+  // A lone block, such as the selection marker ▌, stays a character.
+  return groups.map((g) =>
+    kind(g[0]) === 'block' && g.includes('█') ? { bar: [...g].reduce((n, c) => n + eighths[c], 0) / 8 }
+    : kind(g[0]) === 'shade' ? { track: g.length }
+    : { text: g },
+  );
+};
+
+const rows = Array.from({ length: screen.rows }, (_, i) => screen.lines[i] ?? []);
+---
+<figure class:list={['tui', className]} style={`--cols:${screen.cols}`}>
+  <div class="bar" aria-hidden="true">
+    <span class="lights"><i></i><i></i><i></i></span>
+    <span class="title">{command}</span>
+    <span class="size">{screen.cols}×{screen.rows}</span>
+  </div>
+  <div class="screen" role="img" aria-label={label}>
+    <pre>{rows.map((runs) => (
+      <>{runs.map((run) => {
+        const [text, fg, bg, flags] = run as [string, number, number, number];
+        const s = style(fg, bg, flags);
+        if (!/[█░]/.test(text)) return s ? <span style={s}>{text}</span> : text;
+        const ink = colour(fg) ?? 'var(--term-ink)';
+        return pieces(text).map((p) =>
+          'bar' in p ? <span class="blk" style={`--w:${p.bar};--pad:${Math.ceil(p.bar) - p.bar};--c:${ink}`}>{'█'.repeat(Math.ceil(p.bar))}</span>
+          : 'track' in p ? <span class="trk" style={`--w:${p.track};--c:${ink}`}>{'░'.repeat(p.track)}</span>
+          : s ? <span style={s}>{p.text}</span> : p.text);
+      })}{'\n'}</>
+    ))}</pre>
+  </div>
+</figure>
+
+<style>
+  .tui {
+    min-width: 0;
+    border-radius: calc(var(--radius) + 2px);
+    background: var(--term-bg);
+    border: 1px solid var(--term-edge);
+    box-shadow:
+      0 1px 0 oklch(100% 0 0 / 0.04) inset,
+      0 30px 60px -30px oklch(10% 0.02 260 / 0.45),
+      0 12px 24px -12px oklch(10% 0.02 260 / 0.3);
+    overflow: hidden;
+    color: var(--term-ink);
+  }
+
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--term-edge);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--term-faint);
+  }
+
+  .lights { display: flex; gap: 0.4rem; }
+  .lights i { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: oklch(36% 0.01 255); }
+  .title { color: var(--term-dim); }
+  .size { justify-self: end; }
+
+  .screen {
+    container-type: inline-size;
+    padding: clamp(0.5rem, 0.3rem + 0.8vw, 1.1rem) clamp(0.5rem, 0.3rem + 0.8vw, 1.1rem);
+  }
+
+  pre {
+    margin: 0;
+    font-family: var(--font-mono);
+    /* JetBrains Mono advances 0.6em a cell, so this fits every column. */
+    font-size: calc(100cqi / var(--cols) / 0.6);
+    line-height: 1.24;
+    white-space: pre;
+    overflow: hidden;
+    font-variant-ligatures: none;
+    font-feature-settings: 'calt' 0;
+    tab-size: 8;
+  }
+
+  /* Drawn bars keep the glyphs for copying and searching, but hide them. */
+  .blk, .trk {
+    display: inline-block;
+    width: calc(var(--w) * 0.6em);
+    height: 0.95em;
+    vertical-align: -0.17em;
+    overflow: hidden;
+    color: transparent;
+    background: var(--c);
+  }
+
+  .trk {
+    background: color-mix(in oklch, var(--c) 22%, transparent);
+  }
+
+  /* A bar that ends part way through a cell still takes the whole cell. */
+  .blk { margin-right: calc(var(--pad) * 0.6em); }
+
+</style>

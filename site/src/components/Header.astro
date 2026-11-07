@@ -1,0 +1,182 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../site';
+
+const links = [
+  { href: '/#tour', label: 'Tour' },
+  { href: '/#how', label: 'How it works' },
+  { href: '/#models', label: 'Models' },
+  { href: '/#faq', label: 'FAQ' },
+  { href: '/glossary', label: 'Glossary' },
+  { href: '/install', label: 'Install' },
+];
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="home" href="/" aria-label="lo0 home">
+      <Logo class="mark" />
+    </a>
+
+    <nav aria-label="Main">
+      <ul role="list" class="links">
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="gh" href={site.repo}>
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="menu-btn" popovertarget="menu" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu" popover class="menu">
+    <ul role="list">
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      <li><a href={site.repo}>GitHub</a></li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  // Close the mobile menu after choosing an in-page link.
+  const menu = document.getElementById('menu');
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) menu.hidePopover();
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in oklch, var(--bg) 92%, transparent);
+    backdrop-filter: saturate(1.6) blur(14px);
+    -webkit-backdrop-filter: saturate(1.6) blur(14px);
+    border-bottom: 1px solid transparent;
+    view-transition-name: site-header;
+
+    @supports (animation-timeline: scroll()) {
+      animation: header-rule linear both;
+      animation-timeline: scroll();
+      animation-range: 0 80px;
+    }
+  }
+
+  @keyframes header-rule {
+    to { border-bottom-color: var(--rule); }
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 4rem;
+  }
+
+  .home {
+    display: block;
+    color: var(--ink);
+    margin-right: auto;
+    padding-block: 0.5rem;
+  }
+
+  .home :global(.mark) { width: 3.1rem; }
+
+  .links {
+    display: flex;
+    gap: 1.75rem;
+    font-size: 0.9375rem;
+
+    & a {
+      text-decoration: none;
+      color: var(--ink-2);
+      transition: color 160ms;
+      &:hover { color: var(--ink); }
+    }
+  }
+
+  .actions { display: flex; align-items: center; gap: 0.75rem; }
+
+  .gh {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 160ms, background-color 160ms;
+
+    &:hover { border-color: var(--ink-3); background: var(--surface); }
+  }
+
+  .menu-btn { display: none; }
+
+  @media (width < 52rem) {
+    nav { display: none; }
+    .gh span { display: none; }
+    .gh { padding: 0.5rem; }
+
+    .menu-btn {
+      display: grid;
+      place-content: center;
+      gap: 5px;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 999px;
+      border: 1px solid var(--rule-strong);
+
+      & span {
+        display: block;
+        width: 14px;
+        height: 1.5px;
+        background: currentColor;
+        border-radius: 2px;
+        transition: translate 200ms var(--ease-out), rotate 200ms var(--ease-out);
+      }
+    }
+
+    .site-header:has(.menu:popover-open) .menu-btn span {
+      &:first-child { translate: 0 3.25px; rotate: 45deg; }
+      &:last-child { translate: 0 -3.25px; rotate: -45deg; }
+    }
+  }
+
+  .menu {
+    inset: 4rem 0 auto 0;
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem var(--gutter) 1.5rem;
+    border: 0;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    opacity: 0;
+    translate: 0 -0.5rem;
+    transition: opacity 200ms var(--ease-out), translate 200ms var(--ease-out), display 200ms allow-discrete, overlay 200ms allow-discrete;
+
+    &:popover-open {
+      opacity: 1;
+      translate: 0 0;
+      @starting-style { opacity: 0; translate: 0 -0.5rem; }
+    }
+
+    &::backdrop { background: transparent; }
+
+    & li + li { border-top: 1px solid var(--rule); }
+    & a {
+      display: block;
+      padding-block: 0.9rem;
+      font-size: var(--step-1);
+      text-decoration: none;
+    }
+  }
+</style>

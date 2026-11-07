@@ -1,0 +1,209 @@
+---
+/**
+ * The speed ceiling memory bandwidth sets: to write a token, a model reads
+ * its active weights and the cache of everything before it. Bandwidth
+ * divided by those bytes is the most it can write per second.
+ */
+import Figure from './Figure.astro';
+import { model, quant, activeWeightBytes, growingKVBytes, kvBytes, runtimeOverhead, isMoE, GiB } from '../../data/models';
+
+// Makers' published memory bandwidth, as lo0 uses in internal/match/bandwidth.go.
+// vram is set for cards, whose memory is fixed; Macs come in several sizes.
+const chips = [
+  { id: 'm4pro', name: 'M4 Pro', gbps: 273 },
+  { id: 'm5pro', name: 'M5 Pro', gbps: 307 },
+  { id: 'm4max', name: 'M4 Max', gbps: 546 },
+  { id: 'm3ultra', name: 'M3 Ultra', gbps: 819 },
+  { id: '4090', name: 'RTX 4090', gbps: 1008, vram: 24 },
+  { id: '5090', name: 'RTX 5090', gbps: 1792, vram: 32 },
+];
+const contexts = [
+  { id: '0', label: 'New session', tokens: 0 },
+  { id: '32', label: '32k', tokens: 32 * 1024 },
+  { id: '128', label: '128k', tokens: 128 * 1024 },
+];
+const initialChip = 'm5pro';
+const initialCtx = '32';
+
+const rows = [
+  { id: 'devstral-small-2-24b', note: 'Dense · full attention' },
+  { id: 'qwen3-coder-30b-a3b', note: 'MoE · full attention' },
+  { id: 'qwen3.6-35b-a3b', note: 'MoE · hybrid DeltaNet' },
+].map((r) => {
+  const m = model(r.id);
+  const q = quant(m, 'Q4_K_M');
+  return {
+    ...r,
+    name: m.name,
+    moe: isMoE(m),
+    weights: activeWeightBytes(m, q),
+    at: contexts.map((c) => ({
+      ctx: c.id,
+      cache: growingKVBytes(m, c.tokens),
+      memory: q.bytes + kvBytes(m, c.tokens) + runtimeOverhead,
+    })),
+  };
+});
+
+const maxBytes = Math.max(...rows.flatMap((r) => r.at.map((a) => r.weights + a.cache)));
+const pct = (b: number) => `${((b / maxBytes) * 100).toFixed(2)}%`;
+const gb = (b: number) => (b / 1e9).toFixed(1);
+
+const cells = rows.flatMap((r) =>
+  chips.flatMap((chip) =>
+    r.at.map((a) => {
+      const fits = !chip.vram || a.memory <= chip.vram * GiB;
+      return { row: r.id, key: `${chip.id}-${a.ctx}`, fits, tps: Math.round((chip.gbps * 1e9) / (r.weights + a.cache)), vram: chip.vram };
+    }),
+  ),
+);
+
+const css =
+  contexts
+    .map((c, i) => `.speed:has(input[value='c${c.id}']:checked){${rows.map((r) => `--kv-${r.id.replace(/\./g, '')}:${pct(r.at[i].cache)};`).join('')}}`)
+    .join('') +
+  chips
+    .flatMap((chip) => contexts.map((c) => `.speed:has(input[value='${chip.id}']:checked):has(input[value='c${c.id}']:checked) [data-k='${chip.id}-${c.id}']{display:inline}`))
+    .join('');
+---
+<Figure title="How fast a model can possibly write" for="memory-bandwidth">
+  <style is:inline set:html={css}></style>
+  <div class="speed">
+    <div class="controls">
+      <fieldset>
+        <legend>Chip</legend>
+        <div class="opts">
+          {chips.map((c) => (
+            <label><input type="radio" name="speed-chip" value={c.id} checked={c.id === initialChip} /><span>{c.name}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Context so far</legend>
+        <div class="opts">
+          {contexts.map((c) => (
+            <label><input type="radio" name="speed-ctx" value={`c${c.id}`} checked={c.id === initialCtx} /><span>{c.label}</span></label>
+          ))}
+        </div>
+      </fieldset>
+    </div>
+
+    <ul class="key" role="list" aria-hidden="true">
+      <li><i class="k-w"></i>Weights read per token</li>
+      <li><i class="k-kv"></i>Cache read per token</li>
+    </ul>
+
+    <ol class="rows" role="list">
+      {rows.map((r) => (
+        <li>
+          <p class="who">
+            <span class="name">{r.name}</span>
+            <span class="design">{r.note}</span>
+          </p>
+          <div class="mid">
+            <span class="bar" aria-hidden="true" style={`--kv:var(--kv-${r.id.replace(/\./g, '')})`}>
+              <span class="w" style={`width:${pct(r.weights)}`}></span>
+              <span class="kv"></span>
+            </span>
+            <span class="bytes tnum">
+              {r.at.flatMap((a) => chips.map((chip) => (
+                <span data-k={`${chip.id}-${a.ctx}`}>{gb(r.weights + a.cache)} GB a token</span>
+              )))}
+            </span>
+          </div>
+          <p class="tps">
+            {cells.filter((c) => c.row === r.id).map((c) => (
+              <span data-k={c.key}>
+                {c.fits ? (
+                  <><strong class="tnum">{c.tps}</strong><small>tok/s at most</small></>
+                ) : (
+                  <><strong class="none">–</strong><small>needs more than {c.vram} GiB</small></>
+                )}
+              </span>
+            ))}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <Fragment slot="note">
+    Ceiling = bandwidth ÷ bytes read per token, with Q4_K_M weights, the active parameter count each card
+    states, and an f16 cache. Real runtimes
+    reach part of it: for a chip it has no measurements for, lo0 assumes about 60%, and less for MoE
+    models, whose experts are scattered through memory. Reading the prompt (prefill) depends on compute
+    instead and is not shown, and speculative decoding can beat the ceiling. Mac figures assume enough
+    memory for the model; the M4 Max figure is for the 40-core GPU, as the 32-core part reads 410 GB/s.
+  </Fragment>
+</Figure>
+
+<style>
+  .speed { display: grid; gap: 1.5rem; }
+  [data-k] { display: none; }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: -0.5rem;
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+
+    & li { display: flex; align-items: center; gap: 0.45rem; }
+    & i { width: 0.7rem; height: 0.7rem; border-radius: 2px; }
+    & .k-w { background: var(--ink); }
+    & .k-kv { background: var(--accent); }
+  }
+
+  .rows li {
+    display: grid;
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr) minmax(0, 9rem);
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    padding-block: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .who { display: grid; line-height: 1.3; }
+  .name { font-weight: 600; font-size: 0.9375rem; }
+  .design { font-size: 0.8125rem; color: var(--ink-3); }
+
+  .mid { display: grid; gap: 0.35rem; min-width: 0; }
+
+  .bar {
+    display: flex;
+    gap: 2px;
+    height: 0.9rem;
+    border-radius: 3px;
+    background: var(--bg-sunk);
+    overflow: hidden;
+
+    & > span { display: block; height: 100%; border-radius: 3px; }
+    & .w { background: var(--ink); flex: none; }
+    & .kv { background: var(--accent); width: var(--kv); transition: width 500ms var(--ease-in-out); }
+  }
+
+  .bytes { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-3); }
+
+  .tps {
+    display: grid;
+    justify-items: end;
+    text-align: end;
+
+    & strong {
+      display: block;
+      font-size: var(--step-3);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variation-settings: 'wdth' 85;
+    }
+    & .none { color: var(--ink-3); font-weight: 400; }
+    & small { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); margin-top: 0.3rem; }
+  }
+
+  @media (width < 44rem) {
+    .rows li { grid-template-columns: minmax(0, 1fr) auto; }
+    .mid { grid-column: 1 / -1; grid-row: 2; }
+    .tps { grid-row: 1; grid-column: 2; }
+  }
+</style>

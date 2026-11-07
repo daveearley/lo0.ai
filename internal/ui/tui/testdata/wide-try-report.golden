@@ -1,0 +1,36 @@
+  lo0                                                                Apple M5 Pro · 48 GiB for models · Ollama running
+  
+    1 Home            How the session went                                                                            
+    2 Your sessions                                                                                                   
+  ▌ 3 Models            Ran           14m 0s · 23 requests · exited normally                                          
+    4 Agents            Context       59.6k of 256k  ████▋░░░░░░░░░░░░░░░                                             
+    5 This machine      Speed         19 tok/s measured over 40 replies                                               
+                                      4.9× slower than Opus 5.5 in your Claude Code sessions                          
+                                      The time includes reading the context before writing; lo0's estimate of 21 tok/s
+                                      covers writing alone.                                                           
+                        A reply       Opus 5.5 · Claude Code  ███████                                 6s              
+                                      GPT-5.5 · Codex         ███████████                            10s              
+                                      Coder-30B-A3B           ██████████████████████████████████     30s  this session
+                        Tool calls    118 calls · 6 failed, 5% against 2% in your history                             
+                                                                                                                      
+                      › Keep this setup: Coder-30B-A3B in Claude Code on a local model                                
+                        Try it again                                                                                  
+                        Back                                                                                          
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+                                                                                                                      
+  
+  ↑↓ choose   enter go   esc back

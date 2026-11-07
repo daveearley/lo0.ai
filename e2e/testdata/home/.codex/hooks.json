@@ -1,0 +1,1 @@
+{"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "SECRET_CODEX_HOOK_COMMAND"}]}]}}

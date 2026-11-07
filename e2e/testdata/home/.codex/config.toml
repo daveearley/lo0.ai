@@ -1,0 +1,21 @@
+# Written by hand.
+model = "gpt-5.5"
+approval_policy = "on-request"
+notify = ["say", "SECRET_CODEX_NOTIFY_ARG"]
+
+[mcp_servers.linear]
+url = "https://mcp.linear.example/mcp"
+http_headers = { "X-Key" = "SECRET_CODEX_HEADER_VALUE" }
+
+[mcp_servers.fs]
+command = "npx"
+args = ["-y", "SECRET_CODEX_MCP_ARG"]
+env = { FS_TOKEN = "SECRET_CODEX_ENV_VALUE" }
+
+# Codex Desktop adds a server like this for itself.
+[mcp_servers.node_repl]
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+env = { CODEX_HOME = "SECRET_CODEX_APP_ENV_VALUE", CODEX_CLI_PATH = "SECRET_CODEX_APP_CLI_PATH" }
+
+[projects."/home/u/code/app"]
+trust_level = "trusted"

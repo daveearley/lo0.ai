@@ -1,0 +1,24 @@
+  lo0                        Apple M5 Pro · 48 GiB for models · Ollama running
+  ▌ 1 Home    2 Your sessions    3 Models    4 Agents    5 This machine
+  
+  Local models for your Claude Code and Codex work
+  
+  › Go to a screen, a model or an action                                 
+  
+  ▌ screen  Home                            Local models for your Claude Code…
+    screen  Your sessions                   How much of your work can run loc…
+    screen  Models                          What can you run, and how well?
+    screen  Agents                          What carries over to each coding …
+    screen  This machine                    What is on this machine?
+    action  Compare the three best models
+    model   Coder-30B-A3B                   fits 62% · 10 tok/s · 42.7 GiB · …
+    model   General-27B                     fits 62% · 10 tok/s · 25.2 GiB
+    model   Hybrid-80B-A3B                  fits 14% · 40 tok/s · 48 GiB
+    model   Giant-480B                      too large
+  
+    10 of 10
+  
+  
+  
+  
+  type to search   ↑↓ choose   enter go   esc close

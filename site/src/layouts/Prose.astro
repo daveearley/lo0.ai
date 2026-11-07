@@ -1,0 +1,58 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  frontmatter?: { title: string; description?: string; eyebrow?: string; seoTitle?: string };
+  seoTitle?: string;
+  title?: string;
+  description?: string;
+  eyebrow?: string;
+}
+
+const fm = Astro.props.frontmatter ?? Astro.props;
+const title = fm.title ?? 'lo0';
+// The browser and search title: its own wording when given, else the heading.
+const head = fm.seoTitle ?? (title.includes('lo0') ? title : `${title} · lo0`);
+---
+<Base title={head} description={fm.description}>
+  <article class="wrap prose">
+    <header>
+      {fm.eyebrow && <p class="eyebrow">{fm.eyebrow}</p>}
+      <h1>{title}</h1>
+      {fm.description && <p class="lede">{fm.description}</p>}
+    </header>
+    <slot />
+  </article>
+</Base>
+
+<style>
+  .prose {
+    max-width: 44rem;
+    padding-block: clamp(3rem, 2rem + 5vw, 6rem) var(--section);
+
+    & header { display: grid; gap: 1rem; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--rule); }
+    & h1 { font-size: var(--step-4); }
+    & .lede { font-size: var(--step-1); color: var(--ink-2); line-height: 1.5; }
+
+    & :global(h2) { font-size: var(--step-2); margin: 2.75rem 0 0.9rem; }
+    & :global(h3) { font-size: var(--step-1); margin: 2rem 0 0.6rem; }
+    & :global(p), & :global(ul), & :global(ol), & :global(pre), & :global(table) { margin-bottom: 1.1rem; }
+    & :global(p), & :global(li) { color: var(--ink-2); }
+    & :global(strong) { color: var(--ink); font-weight: 600; }
+    & :global(ul), & :global(ol) { padding-left: 1.25rem; }
+    & :global(li + li) { margin-top: 0.4rem; }
+    & :global(li::marker) { color: var(--ink-3); }
+    & :global(pre) {
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      background: var(--term-bg) !important;
+      color: var(--term-ink);
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    & :global(table) { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+    & :global(th) { text-align: start; font-weight: 600; }
+    & :global(th), & :global(td) { padding: 0.6rem 1rem 0.6rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  }
+</style>
