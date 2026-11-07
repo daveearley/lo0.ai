@@ -30,7 +30,7 @@
 
 
 <header class="head verdict tone-warn">
-<p class="eyebrow"><span class="level">Ready with trade-offs</span><span class="sep">·</span>readiness 59 of 100</p>
+<p class="eyebrow"><span class="level">Local, with trade-offs</span><span class="sep">·</span>readiness 59 of 100</p>
 <h1>A local model can handle many of your sessions, with trade-offs.</h1>
 <p class="lead">62% of your sessions could run on Coder-30B-A3B on this machine today. The rest need more context than it can hold, so they would have to compact.</p>
 <ul class="reasons" role="list"><li>Best fit is Coder-30B-A3B at Q4_K_M, which you already have: 62% of your sessions fit in its 256k window, at about 10 tokens a second.</li><li>That is very slow: a typical reply takes 54s, against 6s with Opus 5.5 in your Claude Code sessions.</li><li>Your median session peaks at 210k tokens and one in ten passes 366k. Sessions above the window would have to compact.</li><li>40 calls went to tools only the Claude apps provide, such as github. They do not work with a local model.</li></ul>
