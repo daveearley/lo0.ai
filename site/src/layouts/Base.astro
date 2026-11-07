@@ -68,6 +68,7 @@ const website = {
     <meta name="go-source" content={`${site.module} ${site.repo} ${site.repo}/tree/main{/dir} ${site.repo}/blob/main{/dir}/{file}#L{line}`} />
     <link rel="sitemap" href="/sitemap.xml" />
     {[website, ...jsonLd].map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+    <script is:inline src="https://cdn.usefathom.com/script.js" data-site="GDEFKARP" data-included-domains="lo0.ai" defer></script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
