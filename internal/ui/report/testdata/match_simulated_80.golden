@@ -5,7 +5,7 @@ Simulated machine: 2 × NVIDIA GeForce RTX 4090 with 24 GiB of VRAM each, beside
 estimated, and lo0 sets nothing up for this hardware.
 
 Verdict
-  Answer        Not yet · readiness 60 of 100
+  Answer        Local not recommended · readiness 60 of 100
                 Most of your sessions need more context than a local model can
                 hold on this machine.
 

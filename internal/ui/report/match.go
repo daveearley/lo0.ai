@@ -22,7 +22,7 @@ const maxCandidatesShown = 6
 var levelLabels = map[match.Level]string{
 	match.LevelReady:     "Ready",
 	match.LevelTradeOffs: "Ready with trade-offs",
-	match.LevelNotYet:    "Not yet",
+	match.LevelNotYet:    "Local not recommended",
 	match.LevelNoHistory: "No history yet",
 }
 

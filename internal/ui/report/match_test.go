@@ -141,7 +141,7 @@ func TestRenderMatchWithNoFit(t *testing.T) {
 	res.Machine.Memory.TotalBytes = 4 << 30
 	m := match.Match(res, sampleCatalog(), harnesses())
 	out := report.RenderMatch(app.Assessment{Scan: res, Match: m}, report.Options{Width: 80, Theme: theme.Plain()})
-	for _, want := range []string{"Not yet", "none with a useful context window", "Too large"} {
+	for _, want := range []string{"Local not recommended", "none with a useful context window", "Too large"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("report missing %q:\n%s", want, out)
 		}

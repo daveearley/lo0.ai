@@ -1,7 +1,7 @@
 lo0 match                           4 Nov 2026 18:52 · 612ms
 
 Verdict
-  Answer        Not yet · readiness 58 of 100
+  Answer        Local not recommended · readiness 58 of 100
                 Most of your sessions need more context than
                 a local model can hold on this machine.
 
